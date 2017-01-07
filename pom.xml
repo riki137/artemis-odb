@@ -148,12 +148,13 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>2.4</version>
+						<version>3.0.1</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
+								<phase>generate-resources</phase>
 								<goals>
-									<goal>jar</goal>
+									<goal>jar-no-fork</goal>
 								</goals>
 							</execution>
 						</executions>

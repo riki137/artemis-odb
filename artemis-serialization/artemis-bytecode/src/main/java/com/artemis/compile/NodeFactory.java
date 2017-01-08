@@ -10,7 +10,7 @@ public class NodeFactory {
 	private final CoreJsonReader jsonReader;
 	private SymbolTable symbols;
 
-	public NodeFactory(SymbolTable symbolTable) {
+	protected NodeFactory(SymbolTable symbolTable) {
 		symbols = symbolTable;
 		jsonReader = new CoreJsonReader();
 	}

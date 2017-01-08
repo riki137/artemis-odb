@@ -104,7 +104,6 @@ public class PoetSourceGenerator implements SourceGenerator {
             builder.addParameter(generateParameterSpecs(parameter));
         }
 
-
         for (String statement : method.statements) {
             builder.addStatement(statement);
         }

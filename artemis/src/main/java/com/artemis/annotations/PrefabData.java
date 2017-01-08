@@ -13,4 +13,12 @@ import java.lang.annotation.*;
 @Documented
 public @interface PrefabData {
 	String value();
+
+	/**
+	 * Marker annotation on {@code Prefabs}, set when the artemis-odb-plugin
+	 * compiles json to classes. Only used internally.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	@interface Compiled {}
 }

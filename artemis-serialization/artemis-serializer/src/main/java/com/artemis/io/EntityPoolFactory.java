@@ -9,22 +9,22 @@ import com.artemis.utils.IntBag;
 import java.util.Arrays;
 
 /**
- * Maintains the pool of entities to be laoded; ensures that the
+ * Maintains the pool of entities to be loaded; ensures that the
  * entity id order matches the order in the json.
  */
-class EntityPoolFactory {
+public class EntityPoolFactory {
 	private final Archetype archetype;
 	private final World world;
 
 	private IntBag pool = new IntBag();
 	private int poolIndex;
 
-	EntityPoolFactory(World world) {
+	public EntityPoolFactory(World world) {
 		this.world = world;
 		archetype = new ArchetypeBuilder().build(world);
 	}
 
-	void configureWith(int count) {
+	public void configureWith(int count) {
 		poolIndex = 0;
 		pool.setSize(0);
 		pool.ensureCapacity(count);
@@ -35,7 +35,11 @@ class EntityPoolFactory {
 		Arrays.sort(pool.getData(), 0, pool.size());
 	}
 
-	Entity createEntity() {
+	public Entity createEntity() {
 		return world.getEntity(pool.getData()[poolIndex++]);
+	}
+
+	public int createEntityId() {
+		return pool.getData()[poolIndex++];
 	}
 }

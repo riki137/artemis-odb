@@ -11,6 +11,8 @@ public class SymbolTable {
 	private final Map<Key, Entry> symbolMap = new HashMap<>();
 	private final Set<Class<?>> registered = new HashSet<>();
 
+	protected SymbolTable() {}
+
 	public void register(Class<?> type) {
 		if (isBuiltinType(type) || registered.contains(type))
 			return;

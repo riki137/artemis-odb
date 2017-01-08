@@ -1,6 +1,6 @@
 package com.artemis.compile;
 
-import com.artemis.component.PrimitiveComponent;
+import com.artemis.component.*;
 import org.junit.Test;
 
 import java.lang.reflect.Field;

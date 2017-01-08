@@ -7,10 +7,6 @@
 	</parent>
 	<artifactId>artemis-odb-gwt</artifactId>
 
-	<properties>
-		<junit.version>3.8</junit.version>
-	</properties>
-
 	<dependencies>
 
 		<dependency>

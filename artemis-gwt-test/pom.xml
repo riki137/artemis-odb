@@ -10,7 +10,6 @@
 	<name>artemis-odb-gwt-integration-test</name>
 
 	<properties>
-		<junit.version>3.8</junit.version>
 		<gdx.version>1.9.5</gdx.version>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>

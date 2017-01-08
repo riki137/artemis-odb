@@ -26,6 +26,10 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.squareup</groupId>
+			<artifactId>javapoet</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.badlogicgames.gdx</groupId>
 			<artifactId>gdx</artifactId>
 			<version>1.9.5</version>

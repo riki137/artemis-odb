@@ -34,7 +34,7 @@ public class TransmuterFieldGenerator implements TypeGenerator {
 		String delim = "";
 		String format = " {";
 		for (Class<? extends Component> type : types) {
-			format += delim + "$T";
+			format += delim + "$T.class";
 			delim = ", ";
 		}
 		format += " }";

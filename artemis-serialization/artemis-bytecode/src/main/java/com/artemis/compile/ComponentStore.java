@@ -1,10 +1,15 @@
 package com.artemis.compile;
 
 import com.artemis.Component;
+import com.artemis.io.SaveFileFormat;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.*;
 
+/**
+ * Maintains name-type mappings for {@link SaveFileFormat#componentIdentifiers},
+ * and registers any encountered type with the {@link SymbolTable}.
+ */
 public class ComponentStore {
 	private final Map<String, Class<?>> keyToComponent = new HashMap<>();
 

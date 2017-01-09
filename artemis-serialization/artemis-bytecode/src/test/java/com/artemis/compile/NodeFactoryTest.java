@@ -29,6 +29,24 @@ public class NodeFactoryTest {
 	}
 
 	@Test
+	public void marshall_simple() throws Exception {
+		SymbolTable symbols = new SymbolTable();
+		NodeFactory nodeFactory = new NodeFactory(symbols);
+
+		assertEquals(PrimitiveComponent.expected,
+			nodeFactory.create(new PrimitiveComponent()));
+	}
+
+	@Test
+	public void marshall_simpleish() throws Exception {
+		SymbolTable symbols = new SymbolTable();
+		NodeFactory nodeFactory = new NodeFactory(symbols);
+
+		assertEquals(PositionXy.expected,
+			nodeFactory.create(new PositionXy()));
+	}
+
+	@Test
 	public void read_simpleish_component() throws Exception {
 		testComponent(PositionXy.class, PositionXy.expected);
 	}
@@ -47,9 +65,9 @@ public class NodeFactoryTest {
 
 		Node node = nodeFactory.create(type, new JsonReader().parse(s));
 		for (Node n : node.children()) {
-			if (SymbolTable.isBuiltinType(n.type)) {
+			if (SymbolTable.isBuiltinType(n.meta.type)) {
 				assertEquals(n.toString(),
-					widen(n.type),
+					widen(n.meta.type),
 					widen(unbox(n.payload.getClass())));
 			} else {
 				assertNull(n.toString(), n.payload);

@@ -1,6 +1,7 @@
 package com.artemis.compile;
 
 import com.artemis.Component;
+import com.artemis.io.SaveFileFormat;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -8,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Resolver for {@link com.artemis.EntityTransmuter transmuters} as defined
+ * in the json representing {@link SaveFileFormat#archetypes}.
+ */
 public class TransmuterStore {
 	public final IntMap<List<Class<? extends Component>>> transmuters = new IntMap<>();
 

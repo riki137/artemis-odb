@@ -2,8 +2,12 @@ package com.artemis.compile;
 
 import com.artemis.compile.poet.ComponentMapperGenerator;
 import com.artemis.compile.poet.PrefabGenerator;
+import com.artemis.compile.poet.SourceGenerator;
 import com.artemis.compile.poet.TransmuterFieldGenerator;
 import com.badlogic.gdx.utils.JsonValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // yes, yes - not a compiler, and transpiler is (maybe) not a word,
 // but the vocabulary makes things a bit easier to navigate.
@@ -29,7 +33,19 @@ public class JsonTranspiler {
 
 		String generate = prefab.generate();
 		System.out.println(generate);
+
+//		factory.
 //		components.types()
 //		factory.create()
+	}
+
+	static class Job {
+		private final List<SourceGenerator> generators = new ArrayList<>();
+
+		public void add(SourceGenerator source) {
+			generators.add(source);
+		}
+
+//		public build()
 	}
 }

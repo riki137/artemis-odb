@@ -20,8 +20,7 @@ public class ComponentMapperGenerator implements TypeGenerator {
 		for (Class<? extends Component> type : store.types()) {
 			ParameterizedTypeName typeName = ParameterizedTypeName.get(ComponentMapper.class, type);
 
-			String name = type.getSimpleName();
-			name = "mapper" + name;
+			String name = "mapper" + type.getSimpleName();
 			FieldSpec fieldSpec = FieldSpec.builder(typeName, name, Modifier.PRIVATE).build();
 
 			builder.addField(fieldSpec);

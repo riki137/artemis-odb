@@ -31,6 +31,43 @@ public class NodeFactory {
 		return node;
 	}
 
+	public Node create(Object source) {
+		return create(source, null);
+	}
+
+	public Node create(Object source, String name) {
+		Node node = node(source.getClass(), name);
+
+		Class<?> current = source.getClass();
+		do {
+			for (Field f : current.getDeclaredFields()) {
+				if (SymbolTable.isValid(f)) {
+					create(source, f, node);
+				}
+			}
+			current = current.getSuperclass();
+		} while (current != Object.class);
+
+		return node;
+	}
+
+	private void create(Object owner, Field field, Node n) {
+		Object o = readField(owner, field);
+		if (SymbolTable.isBuiltinType(field.getType())) {
+			n.add(node(field.getType(), field.getName(), o));
+		} else {
+			n.add(create(o, field.getName()));
+		}
+	}
+
+	private Object readField(Object owner, Field field) {
+		try {
+			return field.get(owner);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	private void create(Class<?> type, JsonValue json, Node n) {
 		SymbolTable.Entry symbol = symbols.lookup(type, json.name);
 		if (symbol == null) {

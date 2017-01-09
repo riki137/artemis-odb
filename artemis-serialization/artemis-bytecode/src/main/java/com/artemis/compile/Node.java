@@ -3,17 +3,18 @@ package com.artemis.compile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.format;
-
+/**
+ * <p>Data structure for mapping json into an intermediate
+ * data structure, linking the hierarchy back to the original
+ * java types.</p>
+ */
 public final class Node {
-	public final Class<?> type;
-	public final String field;
+	public final Meta meta;
 	public final Object payload;
 	private final List<Node> children = new ArrayList<>();
 
-	public Node(Class<?> type, String field, Object payload) {
-		this.type = type;
-		this.field = field;
+	Node(Class<?> type, String field, Object payload) {
+		meta = new Meta(type, field);
 		this.payload = payload;
 	}
 
@@ -55,14 +56,15 @@ public final class Node {
 	}
 
 	private Object widenPayload() {
+		Class<?> type = meta.type;
 		if (payload instanceof Integer)
 			return payload;
 		if (type == Character.class || type == char.class)
 			return new Integer(((Character) payload).charValue());
 		if (type == Short.class || type == Byte.class)
-			return new Integer((int) payload);
+			return Integer.parseInt(payload.toString());
 		if (type == short.class || type == byte.class)
-			return new Integer((int) payload);
+			return Integer.parseInt(payload.toString());
 
 		return payload;
 	}
@@ -74,10 +76,7 @@ public final class Node {
 
 		Node node = (Node) o;
 
-		if (!type.equals(node.type))
-			return false;
-
-		if (field != null ? !field.equals(node.field) : node.field != null)
+		if (!meta.equals(node.meta))
 			return false;
 
 		if (!children.equals(node.children))
@@ -90,14 +89,14 @@ public final class Node {
 
 	@Override
 	public int hashCode() {
-		int result = type.hashCode();
-		result = 31 * result + (field != null ? field.hashCode() : 0);
+		int result = meta.hashCode();
 		result = 31 * result + children.hashCode();
 		result = 31 * result + (payload != null ? payload.hashCode() : 0);
 		return result;
 	}
 
 	private StringBuilder toStringBuilder(StringBuilder sb, String prepend) {
+		String field = meta.field;
 		String format =
 			(field == null && payload == null) ? "(%2$s)" :
 			(field == null && payload != null) ? "(%2$-10s %3$s)" :
@@ -105,7 +104,7 @@ public final class Node {
 		                                       : "(%-10s %s)";
 
 		format = prepend + format + '\n';
-		sb.append(format(format, field, type.getSimpleName(), payload));
+		sb.append(String.format(format, field, meta.type.getSimpleName(), payload));
 
 		prepend += "    ";
 		for (Node child : children)
@@ -117,5 +116,33 @@ public final class Node {
 	@Override
 	public String toString() {
 		return toStringBuilder(new StringBuilder(), "").toString();
+	}
+
+	public final static class Meta {
+		public final Class<?> type;
+		public final String field;
+
+		public Meta(Class<?> type, String field) {
+			this.type = type;
+			this.field = field;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			Meta meta = (Meta) o;
+
+			if (!type.equals(meta.type)) return false;
+			return field != null ? field.equals(meta.field) : meta.field == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = type.hashCode();
+			result = 31 * result + (field != null ? field.hashCode() : 0);
+			return result;
+		}
 	}
 }

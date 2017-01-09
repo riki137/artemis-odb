@@ -7,41 +7,23 @@ import static com.artemis.compile.SymbolTable.Key.key;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.TRANSIENT;
 
+/**
+ * <p>Registers type-field mappings. Primitive fields are assigned
+ * as-is, while other data types are registered upon being
+ * encountered.</p>
+ *
+ * <p>The {@link ComponentStore} is responsible for registering
+ * new types. This class is re-usable across compiler contexts.
+ * Symbols entries are resolved from the class themselves; not all
+ * referenced entries are guaranteed to be referenced in the json</p>
+ */
 public class SymbolTable {
 	private final Map<Key, Entry> symbolMap = new HashMap<>();
 	private final Set<Class<?>> registered = new HashSet<>();
 
 	protected SymbolTable() {}
-
-	public void register(Class<?> type) {
-		if (isBuiltinType(type) || registered.contains(type))
-			return;
-
-		registered.add(type);
-		Class<?> current = type;
-		do {
-			for (Field f : current.getDeclaredFields()) {
-				if (!isValid(f))
-					continue;
-
-				register(f.getType());
-
-				Entry e = new Entry(current, f.getName(), f.getType());
-				symbolMap.put(key(e), e);
-			}
-
-			current = current.getSuperclass();
-		} while (current != Object.class);
-
-		assert registered.contains(type);
-	}
-
 	static boolean isValid(Field f) {
 		return 0 == ((STATIC | TRANSIENT) & f.getModifiers());
-	}
-
-	public static final Entry sym(Class<?> owner, String field, Class<?> type) {
-		return new Entry(owner, field, type);
 	}
 
 	static boolean isBuiltinType(Class<?> fieldType) {
@@ -69,8 +51,33 @@ public class SymbolTable {
 			return t;
 	}
 
+	public void register(Class<?> type) {
+		if (isBuiltinType(type) || registered.contains(type))
+			return;
+
+		registered.add(type);
+		Class<?> current = type;
+		do {
+			for (Field f : current.getDeclaredFields()) {
+				if (!isValid(f))
+					continue;
+
+				register(f.getType());
+
+				Entry e = new Entry(current, f.getName(), f.getType());
+				symbolMap.put(key(e), e);
+			}
+
+			current = current.getSuperclass();
+		} while (current != Object.class);
+
+		assert registered.contains(type);
+	}
+
+
 	public Entry lookup(Node node) {
-		return lookup(node.type, node.field);
+		Node.Meta meta = node.meta;
+		return lookup(meta.type, meta.field);
 	}
 
 	public Entry lookup(Class<?> owner, String field) {
@@ -125,6 +132,9 @@ public class SymbolTable {
 		}
 	}
 
+	/**
+	 * Type for use as identifier in maps.
+	 */
 	static class Key {
 		public final Class<?> owner;
 		public final String field;

@@ -10,7 +10,7 @@ import com.squareup.javapoet.*;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 
-public class TransmuterFieldGenerator implements TypeGenerator {
+public class TransmuterFieldGenerator implements SourceGenerator {
 	private final TransmuterStore store;
 
 	public TransmuterFieldGenerator(TransmuterStore store) {
@@ -39,12 +39,8 @@ public class TransmuterFieldGenerator implements TypeGenerator {
 		}
 		format += " }";
 
-		CodeBlock code = CodeBlock.builder()
-			.addStatement(format, (Class[]) types.toArray(new Class[0]))
-			.build();
-
 		return AnnotationSpec.builder(AspectDescriptor.class)
-			.addMember("all", code)
+			.addMember("all", format, (Object[]) types.toArray(new Class[0]))
 			.build();
 	}
 }

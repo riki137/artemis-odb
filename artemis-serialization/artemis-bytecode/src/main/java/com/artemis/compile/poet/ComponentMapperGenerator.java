@@ -9,7 +9,7 @@ import com.squareup.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
 
-public class ComponentMapperGenerator implements TypeGenerator {
+public class ComponentMapperGenerator implements SourceGenerator {
 	private final ComponentStore store;
 
 	public ComponentMapperGenerator(ComponentStore store) {

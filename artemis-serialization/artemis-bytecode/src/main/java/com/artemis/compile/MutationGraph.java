@@ -27,7 +27,7 @@ public class MutationGraph {
 		}
 	}
 
-	List<SymbolTable.Entry> getRegistered() {
+	public List<SymbolTable.Entry> getRegistered() {
 		List<SymbolTable.Entry> entries = new ArrayList<>();
 		for (Map.Entry<Class<?>, Set<SymbolTable.Entry>> entry : graph.entrySet()) {
 			entries.addAll(entry.getValue());

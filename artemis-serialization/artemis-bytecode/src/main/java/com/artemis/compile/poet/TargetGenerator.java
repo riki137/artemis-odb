@@ -9,27 +9,26 @@ import javax.lang.model.element.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrefabGenerator implements SourceGenerator {
+public class TargetGenerator {
 	private final TypeSpec.Builder builder;
-	private List<TypeGenerator> generators = new ArrayList<>();
+	private List<SourceGenerator> generators = new ArrayList<>();
 
-	public PrefabGenerator(String name) {
-		builder = TypeSpec.classBuilder("Prefab" + name)
+	public TargetGenerator(String name) {
+		builder = TypeSpec.classBuilder(name)
 			.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
 			.superclass(ClassName.get(CompiledPrefab.class));
 	}
 
-	public void add(TypeGenerator generator) {
+	public void add(SourceGenerator generator) {
 		generators.add(generator);
 	}
 
-	@Override
 	public String generate() {
-		for (TypeGenerator generator : generators) {
+		for (SourceGenerator generator : generators) {
 			generator.generate(builder);
 		}
 
-		JavaFile jf = JavaFile.builder("com.artemis", builder.build())
+		JavaFile jf = JavaFile.builder("com.artemis.generated", builder.build())
 			.indent("\t")
 			.build();
 

@@ -1,5 +1,7 @@
 package com.artemis.compile.poet;
 
+import com.squareup.javapoet.TypeSpec;
+
 public interface SourceGenerator {
-	String generate();
+	void generate(TypeSpec.Builder builder);
 }

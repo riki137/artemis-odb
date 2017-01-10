@@ -1,6 +1,7 @@
 package com.artemis.compile;
 
 import com.badlogic.gdx.utils.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -16,6 +17,6 @@ public class JsonTranspilerTest {
 		JsonTranspiler transpiler = new JsonTranspiler();
 		transpiler.compile(json);
 
-		assertTrue(false);
+		fail("not impl");
 	}
 }

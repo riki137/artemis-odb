@@ -22,6 +22,7 @@ public class SymbolTable {
 	private final Set<Class<?>> registered = new HashSet<>();
 
 	protected SymbolTable() {}
+
 	static boolean isValid(Field f) {
 		return 0 == ((STATIC | TRANSIENT) & f.getModifiers());
 	}
@@ -166,7 +167,9 @@ public class SymbolTable {
 		@Override
 		public int hashCode() {
 			int result = owner.hashCode();
-			result = 977 * result + field.hashCode();
+			if (field != null)
+				result = 977 * result + field.hashCode();
+
 			return result;
 		}
 

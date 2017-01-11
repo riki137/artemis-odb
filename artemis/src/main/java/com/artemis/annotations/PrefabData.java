@@ -15,10 +15,15 @@ public @interface PrefabData {
 	String value();
 
 	/**
-	 * Marker annotation on {@code Prefabs}, set when the artemis-odb-plugin
-	 * compiles json to classes. Only used internally.
+	 * Internal marker annotation on {@code Prefabs}, set by the
+	 * artemis-odb-plugin. The presence of this annotation on a
+	 * prefab implies that the original json has been compiled into
+	 * bytecode, eliminating the overhead from reflection and json
+	 * parsing.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.TYPE)
-	@interface Compiled {}
+	@interface Compiled {
+		Class<?> value();
+	}
 }

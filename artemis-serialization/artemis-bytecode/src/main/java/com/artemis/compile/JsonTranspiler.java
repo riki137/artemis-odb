@@ -16,19 +16,10 @@ public class JsonTranspiler {
 		if (newTypesRegistered) {
 			for (Class<?> type : components.types()) {
 				symbols.register(type);
-
-				try {
-					Node node = factory.create(type.newInstance());
-					mutationGraph.add(null, node);
-				} catch (InstantiationException | IllegalAccessException e) {
-					throw new RuntimeException(e);
-				}
 			}
 		}
 
 //		List<EntityData> entityNodes = parseEntityData(json, factory);
-
-
 
 		EntityData entityData = new EntityData(json, components, factory);
 		for (EntityData.Entry data : entityData.entities) {

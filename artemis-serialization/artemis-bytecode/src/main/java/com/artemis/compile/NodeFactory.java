@@ -1,14 +1,23 @@
 package com.artemis.compile;
 
+import com.artemis.predicate.Predicate;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.lang.reflect.Field;
 
 import static com.artemis.compile.Node.node;
+import static com.artemis.predicate.FilterIterator.filter;
 
 public class NodeFactory {
 	private final CoreJsonReader jsonReader;
 	private SymbolTable symbols;
+
+	private Predicate<Field> validFields = new Predicate<Field>() {
+		@Override
+		public boolean apply(Field field) {
+			return SymbolTable.isValid(field);
+		}
+	};
 
 	protected NodeFactory(SymbolTable symbolTable) {
 		symbols = symbolTable;
@@ -16,7 +25,11 @@ public class NodeFactory {
 	}
 
 	public Node create(Class<?> type, JsonValue json) {
-		Node node = node(type, json.name);
+		return create(type, json, json.name);
+	}
+
+	public Node create(Class<?> type, JsonValue json, String name) {
+		Node node = node(type, name);
 
 		Class<?> current = type;
 		do {
@@ -40,10 +53,9 @@ public class NodeFactory {
 
 		Class<?> current = source.getClass();
 		do {
-			for (Field f : current.getDeclaredFields()) {
-				if (SymbolTable.isValid(f)) {
-					create(source, f, node);
-				}
+			Field[] fields = current.getDeclaredFields();
+			for (Field f : filter(fields, validFields)) {
+				create(source, f, node);
 			}
 			current = current.getSuperclass();
 		} while (current != Object.class);

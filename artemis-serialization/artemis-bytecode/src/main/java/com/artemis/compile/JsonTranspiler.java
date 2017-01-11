@@ -3,14 +3,11 @@ package com.artemis.compile;
 import com.artemis.compile.poet.*;
 import com.badlogic.gdx.utils.JsonValue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 // yes, yes - not a compiler, and transpiler is (maybe) not a word,
 // but the vocabulary makes things a bit easier to navigate.
 public class JsonTranspiler {
 	private final SymbolTable symbols = new SymbolTable();
-	private final ComponentStore components = new ComponentStore();
+	private final GlobalComponentContext components = new GlobalComponentContext();
 	private final NodeFactory factory = new NodeFactory(symbols);
 	private final MutationGraph mutationGraph = new MutationGraph(symbols);
 
@@ -29,13 +26,25 @@ public class JsonTranspiler {
 			}
 		}
 
-		TransmuterStore transmuters = new TransmuterStore();
-		transmuters.register(components, json);
+//		List<EntityData> entityNodes = parseEntityData(json, factory);
 
-		TargetGenerator prefab = new TargetGenerator("Sample");
-		prefab.add(new TransmuterFieldGenerator(transmuters));
+
+
+		EntityData entityData = new EntityData(json, components, factory);
+		for (EntityData.Entry data : entityData.entities) {
+			for (Node n : data.components) {
+				mutationGraph.add(null, n);
+			}
+		}
+
+		TargetFabricator prefab = new TargetFabricator("SamplePrefab");
+		prefab.add(new SuperClassGenerator(CompiledPrefab.class));
+		prefab.add(new TransmuterFieldGenerator(json, components));
 		prefab.add(new ComponentMapperGenerator(components));
-		prefab.add(new GlobalUtilGenerator(mutationGraph));
+
+		TargetFabricator globalUtil = new TargetFabricator("GlobalUtil");
+		globalUtil.add(new GlobalUtilGenerator(mutationGraph));
+		String global = globalUtil.generate();
 
 //		TargetGenerator prefab = new TargetGenerator("GlobalUtil");
 //		prefab.add(new GlobalUtilGenerator());
@@ -47,5 +56,9 @@ public class JsonTranspiler {
 //		components.types()
 //		factory.create()
 	}
+
+
+
+
 
 }

@@ -10,10 +10,10 @@ import java.util.*;
  * Maintains name-type mappings for {@link SaveFileFormat#componentIdentifiers},
  * and registers any encountered type with the {@link SymbolTable}.
  */
-public class ComponentStore {
+public class GlobalComponentContext {
 	private final Map<String, Class<?>> keyToComponent = new HashMap<>();
 
-	protected ComponentStore() {}
+	protected GlobalComponentContext() {}
 
 	public boolean register(String key, Class<?> component) {
 		if (!keyToComponent.containsKey(key)) {

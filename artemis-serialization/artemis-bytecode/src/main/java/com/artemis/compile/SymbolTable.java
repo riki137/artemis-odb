@@ -12,7 +12,7 @@ import static java.lang.reflect.Modifier.TRANSIENT;
  * as-is, while other data types are registered upon being
  * encountered.</p>
  *
- * <p>The {@link ComponentStore} is responsible for registering
+ * <p>The {@link GlobalComponentContext} is responsible for registering
  * new types. This class is re-usable across compiler contexts.
  * Symbols entries are resolved from the class themselves; not all
  * referenced entries are guaranteed to be referenced in the json</p>

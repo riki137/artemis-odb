@@ -1,7 +1,5 @@
 package com.artemis.compile.poet;
 
-import com.artemis.compile.CompiledPrefab;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
@@ -9,14 +7,13 @@ import javax.lang.model.element.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TargetGenerator {
+public class TargetFabricator {
 	private final TypeSpec.Builder builder;
 	private List<SourceGenerator> generators = new ArrayList<>();
 
-	public TargetGenerator(String name) {
+	public TargetFabricator(String name) {
 		builder = TypeSpec.classBuilder(name)
-			.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-			.superclass(ClassName.get(CompiledPrefab.class));
+			.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
 	}
 
 	public void add(SourceGenerator generator) {

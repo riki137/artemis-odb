@@ -1,6 +1,7 @@
 package com.artemis.compile;
 
 import com.artemis.component.ArrayComponent;
+import com.artemis.component.ComponentX;
 import com.artemis.component.PositionXy;
 import com.artemis.component.PrimitiveComponent;
 import com.badlogic.gdx.math.Vector2;
@@ -64,21 +65,13 @@ public class NodeFactoryTest {
 	@Test
 	public void test_nodes_Vector2() throws Exception {
 		assertNodeSymmetry(new Vector2(2, 4.2f));
+	}
 
-
-
-		Node n = toNodeViaJson(new Vector2(12, 3.2f));
-
-		Node x = n.children().get(0);
-		MethodSpec methodSpec = MethodSpec.methodBuilder(name(n) + "_" + x.meta.field)
-			.addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-			.addParameter(n.meta.type, "owner")
-			.addParameter(x.meta.type, "value")
-			.addCode("$N.$N = $L", "owner", x.meta.field, x.payload)
-			.build();
-		FieldSpec.builder(Void.class, name(n) + "_" + n.meta.field);
-
-
+	@Test
+	public void test_nodes_ComponentX() throws Exception {
+		ComponentX c = new ComponentX();
+		c.text = "yes?";
+		assertNodeSymmetry(c);
 	}
 
 	@Test

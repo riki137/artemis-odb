@@ -7,10 +7,22 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import static java.lang.Character.toLowerCase;
+
 final class SymbolUtil {
 	private SymbolUtil() {}
 
-	static boolean isAccessible(SymbolTable.Entry entry) {
+	static String mapperName(Class<?> type) {
+		String name = type.getSimpleName();
+		return String.format("%s%sMapper",
+			toLowerCase(name.charAt(0)), name.substring(1));
+	}
+
+	static String mapperName(SymbolTable.Entry entry) {
+		return mapperName(entry.type);
+	}
+
+	static boolean isWritable(SymbolTable.Entry entry) {
 		Field f = field(entry);
 		return f != null
 			&& 0 != (Modifier.PUBLIC & f.getModifiers());

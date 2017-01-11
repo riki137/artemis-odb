@@ -16,7 +16,7 @@ import java.util.List;
 public class TransmuterStore {
 	public final IntMap<List<Class<? extends Component>>> transmuters = new IntMap<>();
 
-	public void register(ComponentStore components, JsonValue jsonValue) {
+	public TransmuterStore(GlobalComponentContext components, JsonValue jsonValue) {
 		jsonValue = jsonValue.get("archetypes");
 		System.out.println(jsonValue);
 		JsonValue entry = jsonValue.child;
@@ -28,7 +28,7 @@ public class TransmuterStore {
 		} while ((entry = entry.next) != null);
 	}
 
-	private static List<Class<? extends Component>> resolveTypes(ComponentStore components,
+	private static List<Class<? extends Component>> resolveTypes(GlobalComponentContext components,
 	                                                             JsonValue component) {
 
 		List<Class<? extends Component>> types = new ArrayList<>();

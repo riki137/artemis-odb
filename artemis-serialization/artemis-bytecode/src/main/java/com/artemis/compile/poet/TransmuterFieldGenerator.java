@@ -3,8 +3,10 @@ package com.artemis.compile.poet;
 import com.artemis.Component;
 import com.artemis.EntityTransmuter;
 import com.artemis.annotations.AspectDescriptor;
+import com.artemis.compile.GlobalComponentContext;
 import com.artemis.compile.TransmuterStore;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.JsonValue;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
@@ -13,8 +15,8 @@ import java.util.List;
 public class TransmuterFieldGenerator implements SourceGenerator {
 	private final TransmuterStore store;
 
-	public TransmuterFieldGenerator(TransmuterStore store) {
-		this.store = store;
+	public TransmuterFieldGenerator(JsonValue json, GlobalComponentContext components) {
+		store = new TransmuterStore(components, json);
 	}
 
 	public void generate(TypeSpec.Builder builder) {
@@ -33,7 +35,7 @@ public class TransmuterFieldGenerator implements SourceGenerator {
 	private AnnotationSpec annotation(List<Class<? extends Component>> types) {
 		String delim = "";
 		String format = " {";
-		for (Class<? extends Component> type : types) {
+		for (Class<? extends Component> ignored : types) {
 			format += delim + "$T.class";
 			delim = ", ";
 		}

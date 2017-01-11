@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.artemis.compile.poet.SymbolUtil.isAccessible;
+import static com.artemis.compile.poet.SymbolUtil.isWritable;
 import static com.artemis.compile.poet.SymbolUtil.method;
 import static com.artemis.predicate.Predicates.findSetterFor;
 
@@ -52,7 +52,7 @@ public class GlobalUtilGenerator implements SourceGenerator {
 	private static class FieldMethod implements MethodFactory {
 		@Override
 		public boolean check(SymbolTable.Entry entry) {
-			return isAccessible(entry);
+			return isWritable(entry);
 		}
 
 		@Override
@@ -71,7 +71,7 @@ public class GlobalUtilGenerator implements SourceGenerator {
 	private static class SetterMethod implements MethodFactory {
 		@Override
 		public boolean check(SymbolTable.Entry entry) {
-			return !isAccessible(entry)
+			return !isWritable(entry)
 				&& method(entry, findSetterFor(entry)) != null;
 		}
 

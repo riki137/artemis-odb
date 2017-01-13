@@ -28,7 +28,7 @@ final class SymbolUtil {
 			&& 0 != (Modifier.PUBLIC & f.getModifiers());
 	}
 
-	public static Field field(SymbolTable.Entry entry) {
+	static Field field(SymbolTable.Entry entry) {
 		String field = entry.field;
 
 		Class<?> type = entry.owner;
@@ -42,7 +42,7 @@ final class SymbolUtil {
 		return null;
 	}
 
-	public static Method method(SymbolTable.Entry entry, Predicate<Method> filter) {
+	static Method method(SymbolTable.Entry entry, Predicate<Method> filter) {
 		Class<?> type = entry.owner;
 		do {
 			for (Method m : type.getDeclaredMethods()) {

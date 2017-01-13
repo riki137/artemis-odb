@@ -56,10 +56,4 @@ public class MutationGraph {
 
 		return nodes;
 	}
-
-	public void validate() {
-		for (Map.Entry<Class<?>, Set<SymbolTable.Entry>> entry : graph.entrySet()) {
-
-		}
-	}
 }

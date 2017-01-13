@@ -27,7 +27,7 @@ public class SymbolTable {
 		return 0 == ((STATIC | TRANSIENT) & f.getModifiers());
 	}
 
-	static boolean isBuiltinType(Class<?> fieldType) {
+	public static boolean isBuiltinType(Class<?> fieldType) {
 		return fieldType.isPrimitive() || fieldType == String.class;
 	}
 

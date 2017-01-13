@@ -1,6 +1,7 @@
 package com.artemis.compile;
 
 import com.artemis.compile.poet.*;
+import com.artemis.prefab.CompiledPrefab;
 import com.badlogic.gdx.utils.JsonValue;
 
 // yes, yes - not a compiler, and transpiler is (maybe) not a word,
@@ -28,10 +29,13 @@ public class JsonTranspiler {
 			}
 		}
 
+		NodePoet poet = new NodePoet(symbols);
+
 		TargetFabricator prefab = new TargetFabricator("SamplePrefab");
 		prefab.add(new SuperClassGenerator(CompiledPrefab.class));
 		prefab.add(new TransmuterFieldGenerator(json, components));
 		prefab.add(new ComponentMapperGenerator(components));
+		prefab.add(new EntityCreateGenerator(entityData.entities, poet));
 
 		TargetFabricator globalUtil = new TargetFabricator("GlobalUtil");
 		globalUtil.add(new GlobalUtilGenerator(mutationGraph));

@@ -9,6 +9,7 @@ import com.artemis.component.ComponentY;
 import com.artemis.component.NameComponent;
 import com.artemis.component.ReusedComponent;
 import com.artemis.io.EntityPoolFactory;
+import com.artemis.prefab.CompiledPrefab;
 
 import static com.artemis.compile.FunctionSample.ComponentX_text;
 import static com.artemis.compile.FunctionSample.ComponentY_text;
@@ -33,11 +34,9 @@ public class SomePrefabSample extends CompiledPrefab {
 	private ComponentMapper<ComponentY> componentYMapper;
 	private ComponentMapper<ReusedComponent> reusedComponentMapper;
 
-	public void create(World world) {
+	public void compiledCreate(World world) {
 
-		EntityPoolFactory factory = entityFactory(world);
-		factory.configureWith(3);
-
+		EntityPoolFactory factory = entityFactory(world, 3);
 		int e;
 
 		e = factory.createEntityId();

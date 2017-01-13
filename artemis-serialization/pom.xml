@@ -12,9 +12,9 @@
 
 	<modules>
 		<module>artemis-serializer</module>
-		<module>artemis-bytecode</module>
-		<module>artemis-json</module>
+		<!--<module>artemis-json</module>-->
 		<module>artemis-json-libgdx</module>
+		<module>artemis-bytecode</module>
 		<module>artemis-kryo</module>
 	</modules>
 

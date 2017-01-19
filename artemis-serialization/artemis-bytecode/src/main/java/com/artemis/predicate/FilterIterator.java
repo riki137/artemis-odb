@@ -3,7 +3,6 @@ package com.artemis.predicate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 public class FilterIterator<T> implements Iterator<T> {
 	private final Iterator<T> src;

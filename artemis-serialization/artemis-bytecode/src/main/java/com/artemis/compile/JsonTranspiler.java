@@ -35,14 +35,11 @@ public class JsonTranspiler {
 		prefab.add(new SuperClassGenerator(CompiledPrefab.class));
 		prefab.add(new TransmuterFieldGenerator(json, components));
 		prefab.add(new ComponentMapperGenerator(components));
-		prefab.add(new EntityCreateGenerator(entityData.entities, poet));
+		prefab.add(new EntityCreateGenerator(entityData.entities, poet, symbols));
 
 		TargetFabricator globalUtil = new TargetFabricator("GlobalUtil");
 		globalUtil.add(new GlobalUtilGenerator(mutationGraph));
 		String global = globalUtil.generate();
-
-//		TargetGenerator prefab = new TargetGenerator("GlobalUtil");
-//		prefab.add(new GlobalUtilGenerator());
 
 		String generate = prefab.generate();
 		System.out.println(generate);

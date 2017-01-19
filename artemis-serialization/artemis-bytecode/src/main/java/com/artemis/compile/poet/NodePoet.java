@@ -4,6 +4,7 @@ import com.artemis.compile.EntityData;
 import com.artemis.compile.Node;
 import com.artemis.compile.SymbolTable;
 import com.artemis.predicate.Predicate;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class NodePoet  {
 				return false;
 
 			for (Node noSerializer : filter(node.children(), not(isTrivial))) {
-				System.out.println("no serializer");
+				System.out.println("missing serializer for: " + noSerializer);
 				return false;
 			}
 
@@ -48,33 +49,38 @@ public class NodePoet  {
 		this.symbols = symbols;
 	}
 
-	public CodeBlock generate(Node node, EntityData.Entry entity) {
+	public CodeBlock generate(Node node, SymbolTable.Entry symbol) {
 		CodeBlock.Builder builder = CodeBlock.builder();
-		write(node, null, entity, builder);
+		write(node, symbol, "c", builder);
 		return builder.build();
 	}
 
 	private void write(Node node,
+	                   SymbolTable.Entry symbol,
 	                   String ownerVariable,
-	                   EntityData.Entry entity,
 	                   CodeBlock.Builder out) {
 
+		ClassName util = ClassName.get("com.artemis", "GlobalUtil");
 		if (isBuiltinType(node.meta.type)) {
-			String name = allocateVariable(node, entity);
-			out.addStatement("$T $L", node.meta.type, name);
+//			SymbolTable.Entry symbol = symbols.lookup(node);
+//			String name = allocateVariable(node, ownerVariable);
+//			System.out.println(name);
+			String methodName = symbol.owner.getSimpleName() + "_" + symbol.field;
+			out.addStatement("$L($N, $S)", methodName, ownerVariable, node.payload);
 		} else if (isTrivial.apply(node)) {
 			for (Node child : node.children()) {
-				write(child, ownerVariable, entity, out);
+				SymbolTable.Entry nextSymbol = symbols.lookup(node.meta.type, child.meta.field);
+				write(child, nextSymbol, nextSymbol.field, out);
 			}
 		}
 //		CodeBlock.builder()
 //			.addStatement("e$")
 	}
 
-	private String allocateVariable(Node node, EntityData.Entry entry) {
+	private String allocateVariable(Node node) {
 		String name = node.meta.type.getSimpleName();
 		name = toLowerCase(name.charAt(0)) + name.substring(1);
-		name += entry.entityId;
+		name += node.hashCode();
 		variableNames.add(name);
 
 		return name;

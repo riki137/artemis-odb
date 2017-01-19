@@ -75,10 +75,8 @@ public class SymbolTable {
 		assert registered.contains(type);
 	}
 
-
 	public Entry lookup(Node node) {
-		Node.Meta meta = node.meta;
-		return lookup(meta.type, meta.field);
+		return lookup(node.meta.type, node.children().get(0).meta.field);
 	}
 
 	public Entry lookup(Class<?> owner, String field) {

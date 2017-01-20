@@ -1,10 +1,10 @@
 package com.artemis.component;
 
 import com.artemis.Component;
-import com.artemis.compile.Node;
+import com.artemis.compile.NodeOld;
 import com.badlogic.gdx.utils.IntArray;
 
-import static com.artemis.compile.Node.node;
+import static com.artemis.compile.NodeOld.node;
 
 public class ArrayComponent extends Component {
 	public IntArray intArray = new IntArray();
@@ -16,7 +16,7 @@ public class ArrayComponent extends Component {
 		intArray.add(30);
 	}
 
-	public static Node expected =
+	public static NodeOld expected =
 		node(ArrayComponent.class,
 			node(IntArray.class,  "intArray",
 				node(int.class, null, 1),

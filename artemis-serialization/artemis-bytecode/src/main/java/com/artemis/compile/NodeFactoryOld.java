@@ -5,36 +5,36 @@ import com.badlogic.gdx.utils.JsonValue;
 
 import java.lang.reflect.Field;
 
-import static com.artemis.compile.Node.node;
+import static com.artemis.compile.NodeOld.node;
 import static com.artemis.predicate.FilterIterator.filter;
 
-public class NodeFactory {
+public class NodeFactoryOld {
 	private final CoreJsonReader jsonReader;
-	private SymbolTable symbols;
+	private SymbolTableOld symbols;
 
 	private Predicate<Field> validFields = new Predicate<Field>() {
 		@Override
 		public boolean apply(Field field) {
-			return SymbolTable.isValid(field);
+			return SymbolTableOld.isValid(field);
 		}
 	};
 
-	protected NodeFactory(SymbolTable symbolTable) {
+	protected NodeFactoryOld(SymbolTableOld symbolTable) {
 		symbols = symbolTable;
 		jsonReader = new CoreJsonReader();
 	}
 
-	public Node create(Class<?> type, JsonValue json) {
+	public NodeOld create(Class<?> type, JsonValue json) {
 		return create(type, json, json.name);
 	}
 
-	public Node create(Class<?> type, JsonValue json, String name) {
-		Node node = node(type, name);
+	public NodeOld create(Class<?> type, JsonValue json, String name) {
+		NodeOld node = node(type, name);
 
 		Class<?> current = type;
 		do {
 			for (Field f : current.getDeclaredFields()) {
-				if (SymbolTable.isValid(f)) {
+				if (SymbolTableOld.isValid(f)) {
 					create(type, json.get(f.getName()), node);
 				}
 			}
@@ -44,12 +44,12 @@ public class NodeFactory {
 		return node;
 	}
 
-	public Node create(Object source) {
+	public NodeOld create(Object source) {
 		return create(source, null);
 	}
 
-	public Node create(Object source, String name) {
-		Node node = node(source.getClass(), name);
+	public NodeOld create(Object source, String name) {
+		NodeOld node = node(source.getClass(), name);
 
 		Class<?> current = source.getClass();
 		do {
@@ -63,9 +63,9 @@ public class NodeFactory {
 		return node;
 	}
 
-	private void create(Object owner, Field field, Node n) {
+	private void create(Object owner, Field field, NodeOld n) {
 		Object o = readField(owner, field);
-		if (SymbolTable.isBuiltinType(field.getType())) {
+		if (SymbolTableOld.isBuiltinType(field.getType())) {
 			n.add(node(field.getType(), field.getName(), o));
 		} else {
 			n.add(create(o, field.getName()));
@@ -80,18 +80,18 @@ public class NodeFactory {
 		}
 	}
 
-	private void create(Class<?> type, JsonValue json, Node n) {
-		SymbolTable.Entry symbol = symbols.lookup(type, json.name);
+	private void create(Class<?> type, JsonValue json, NodeOld n) {
+		SymbolTableOld.Entry symbol = symbols.lookup(type, json.name);
 		if (symbol == null) {
 			String name = json != null ? json.name : null;
 			throw new NullPointerException(type.getSimpleName() + "::" + name);
 		}
 
-		if (SymbolTable.isBuiltinType(symbol.type)) {
+		if (SymbolTableOld.isBuiltinType(symbol.type)) {
 			Object o = jsonReader.read(symbol.type, json);
 			n.add(node(symbol.type, symbol.field, o));
 		} else {
-			Node object = create(symbol.type, json);
+			NodeOld object = create(symbol.type, json);
 			n.add(object);
 		}
 	}

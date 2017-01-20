@@ -12,14 +12,14 @@ public class EntityData {
 
 	protected EntityData(JsonValue json,
 	                     GlobalComponentContext components,
-	                     NodeFactory factory) {
+	                     NodeFactoryOld factory) {
 
 		entities = parseEntityData(json, components, factory);
 	}
 
 	private List<Entry> parseEntityData(JsonValue json,
 	                                    GlobalComponentContext components,
-	                                    NodeFactory factory) {
+	                                    NodeFactoryOld factory) {
 
 		List<Entry> entities = new ArrayList<>();
 		JsonValue entityIt = json.get("entities").child;
@@ -28,7 +28,7 @@ public class EntityData {
 			int archetype = entityIt.get("archetype").asInt();
 			String tag = tag(entityIt);
 			List<String> groups = groups(entityIt);
-			List<Node> nodes = components(entityIt, factory, components);
+			List<NodeOld> nodes = components(entityIt, factory, components);
 
 			entities.add(new Entry(entityId, archetype, tag, groups, nodes));
 		} while ((entityIt = entityIt.next) != null);
@@ -36,18 +36,18 @@ public class EntityData {
 		return entities;
 	}
 
-	private List<Node> components(JsonValue entityIt,
-	                              NodeFactory factory,
-	                              GlobalComponentContext components) {
+	private List<NodeOld> components(JsonValue entityIt,
+	                                 NodeFactoryOld factory,
+	                                 GlobalComponentContext components) {
 
 		JsonValue it = entityIt.get("components").child;
 		if (it == null)
 			return Collections.emptyList();
 
-		List<Node> nodes = new ArrayList<>();
+		List<NodeOld> nodes = new ArrayList<>();
 		do {
 			Class<? extends Component> type = components.get(it.name);
-			Node componentNode = factory.create(type, it, null);
+			NodeOld componentNode = factory.create(type, it, null);
 			nodes.add(componentNode);
 		} while ((it = it.next) != null);
 
@@ -78,13 +78,13 @@ public class EntityData {
 		public final int archetype;
 		public final String tag;
 		public final List<String> groups;
-		public final List<Node> components;
+		public final List<NodeOld> components;
 
 		public Entry(int entityId,
 		             int archetype,
 		             String tag,
 		             List<String> groups,
-		             List<Node> components) {
+		             List<NodeOld> components) {
 
 			this.entityId = entityId;
 			this.archetype = archetype;
@@ -104,7 +104,7 @@ public class EntityData {
 				sb.append(" groups=" + groups);
 
 			sb.append("]\n");
-			for (Node c : components) {
+			for (NodeOld c : components) {
 				sb.append(c);
 			}
 

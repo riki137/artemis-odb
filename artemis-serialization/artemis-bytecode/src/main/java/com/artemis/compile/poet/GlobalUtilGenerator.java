@@ -1,7 +1,7 @@
 package com.artemis.compile.poet;
 
 import com.artemis.compile.MutationGraph;
-import com.artemis.compile.SymbolTable;
+import com.artemis.compile.SymbolTableOld;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
@@ -24,16 +24,16 @@ public class GlobalUtilGenerator implements SourceGenerator {
 		factories.add(new SetterMethod());
 	}
 
-	protected List<MethodSpec> generate(List<SymbolTable.Entry> entries) {
+	protected List<MethodSpec> generate(List<SymbolTableOld.Entry> entries) {
 		List<MethodSpec> methods = new ArrayList<>();
-		for (SymbolTable.Entry entry : entries) {
+		for (SymbolTableOld.Entry entry : entries) {
 			methods.add(generate(entry));
 		}
 
 		return methods;
 	}
 
-	protected MethodSpec generate(SymbolTable.Entry entry) {
+	protected MethodSpec generate(SymbolTableOld.Entry entry) {
 		for (MethodFactory factory : factories) {
 			if (factory.check(entry)) {
 				return factory.generate(entry);
@@ -51,12 +51,12 @@ public class GlobalUtilGenerator implements SourceGenerator {
 
 	private static class FieldMethod implements MethodFactory {
 		@Override
-		public boolean check(SymbolTable.Entry entry) {
+		public boolean check(SymbolTableOld.Entry entry) {
 			return isWritable(entry);
 		}
 
 		@Override
-		public MethodSpec generate(SymbolTable.Entry entry) {
+		public MethodSpec generate(SymbolTableOld.Entry entry) {
 			String name = entry.owner.getSimpleName() + "_" + entry.field;
 
 			return MethodSpec.methodBuilder(name)
@@ -70,13 +70,13 @@ public class GlobalUtilGenerator implements SourceGenerator {
 
 	private static class SetterMethod implements MethodFactory {
 		@Override
-		public boolean check(SymbolTable.Entry entry) {
+		public boolean check(SymbolTableOld.Entry entry) {
 			return !isWritable(entry)
 				&& method(entry, findSetterFor(entry)) != null;
 		}
 
 		@Override
-		public MethodSpec generate(SymbolTable.Entry entry) {
+		public MethodSpec generate(SymbolTableOld.Entry entry) {
 			String name = entry.owner.getSimpleName() + "_" + entry.field;
 
 			Method method = method(entry, findSetterFor(entry));
@@ -90,7 +90,7 @@ public class GlobalUtilGenerator implements SourceGenerator {
 	}
 
 	public interface MethodFactory {
-		boolean check(SymbolTable.Entry entry);
-		MethodSpec generate(SymbolTable.Entry entry);
+		boolean check(SymbolTableOld.Entry entry);
+		MethodSpec generate(SymbolTableOld.Entry entry);
 	}
 }

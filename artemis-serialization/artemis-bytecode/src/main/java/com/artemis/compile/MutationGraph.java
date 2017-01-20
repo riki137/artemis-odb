@@ -4,38 +4,38 @@ import java.util.*;
 
 
 /**
- * Tracks written fields of objects from a {@link Node}. This class
+ * Tracks written fields of objects from a {@link NodeOld}. This class
  * serves as a basis for resolving the set of necessary {@code setters}.
  */
 public class MutationGraph {
-	private Map<Class<?>, Set<SymbolTable.Entry>> graph = new HashMap<>();
+	private Map<Class<?>, Set<SymbolTableOld.Entry>> graph = new HashMap<>();
 
-	private final SymbolTable symbols;
+	private final SymbolTableOld symbols;
 
-	public MutationGraph(SymbolTable symbols) {
+	public MutationGraph(SymbolTableOld symbols) {
 		this.symbols = symbols;
 	}
 
-	public void add(Class<?> owner, Node node) {
+	public void add(Class<?> owner, NodeOld node) {
 		if (owner != null)
 			typeNode(owner).add(symbols.lookup(owner, node.meta.field));
 
-		if (!SymbolTable.isBuiltinType(node.meta.type)) {
-			for (Node child : node.children()) {
+		if (!SymbolTableOld.isBuiltinType(node.meta.type)) {
+			for (NodeOld child : node.children()) {
 				add(node.meta.type, child);
 			}
 		}
 	}
 
-	public List<SymbolTable.Entry> getRegistered() {
-		List<SymbolTable.Entry> entries = new ArrayList<>();
-		for (Map.Entry<Class<?>, Set<SymbolTable.Entry>> entry : graph.entrySet()) {
+	public List<SymbolTableOld.Entry> getRegistered() {
+		List<SymbolTableOld.Entry> entries = new ArrayList<>();
+		for (Map.Entry<Class<?>, Set<SymbolTableOld.Entry>> entry : graph.entrySet()) {
 			entries.addAll(entry.getValue());
 		}
 
-		Collections.sort(entries, new Comparator<SymbolTable.Entry>() {
+		Collections.sort(entries, new Comparator<SymbolTableOld.Entry>() {
 			@Override
-			public int compare(SymbolTable.Entry o1, SymbolTable.Entry o2) {
+			public int compare(SymbolTableOld.Entry o1, SymbolTableOld.Entry o2) {
 				int result = o1.owner.getName().compareTo(o2.owner.getName());
 				if (result == 0)
 					result = o1.field.compareTo(o2.field);
@@ -47,8 +47,8 @@ public class MutationGraph {
 		return entries;
 	}
 
-	private Set<SymbolTable.Entry> typeNode(Class<?> type) {
-		Set<SymbolTable.Entry> nodes = graph.get(type);
+	private Set<SymbolTableOld.Entry> typeNode(Class<?> type) {
+		Set<SymbolTableOld.Entry> nodes = graph.get(type);
 		if (nodes == null) {
 			nodes = new HashSet<>();
 			graph.put(type, nodes);

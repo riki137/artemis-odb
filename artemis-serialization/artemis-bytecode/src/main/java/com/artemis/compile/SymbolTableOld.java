@@ -3,7 +3,7 @@ package com.artemis.compile;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static com.artemis.compile.SymbolTable.Key.key;
+import static com.artemis.compile.SymbolTableOld.Key.key;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.TRANSIENT;
 
@@ -17,11 +17,11 @@ import static java.lang.reflect.Modifier.TRANSIENT;
  * Symbols entries are resolved from the class themselves; not all
  * referenced entries are guaranteed to be referenced in the json</p>
  */
-public class SymbolTable {
+public class SymbolTableOld {
 	private final Map<Key, Entry> symbolMap = new HashMap<>();
 	private final Set<Class<?>> registered = new HashSet<>();
 
-	protected SymbolTable() {}
+	protected SymbolTableOld() {}
 
 	static boolean isValid(Field f) {
 		return 0 == ((STATIC | TRANSIENT) & f.getModifiers());
@@ -75,7 +75,7 @@ public class SymbolTable {
 		assert registered.contains(type);
 	}
 
-	public Entry lookup(Node node) {
+	public Entry lookup(NodeOld node) {
 		return lookup(node.meta.type, node.children().get(0).meta.field);
 	}
 

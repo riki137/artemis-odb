@@ -1,17 +1,17 @@
 package com.artemis.predicate;
 
-import com.artemis.compile.SymbolTable;
+import com.artemis.compile.SymbolTableOld;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class FindSetterForTest {
-	private SymbolTable symbols;
+	private SymbolTableOld symbols;
 
 	@Before
 	public void init() {
-		symbols = new SymbolTable() {};
+		symbols = new SymbolTableOld() {};
 	}
 
 	@Test

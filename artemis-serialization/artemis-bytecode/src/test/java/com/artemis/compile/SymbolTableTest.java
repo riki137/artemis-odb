@@ -10,12 +10,12 @@ import static org.junit.Assert.*;
 public class SymbolTableTest {
 	@Test
 	public void test_register_type() {
-		SymbolTable symbols = new SymbolTable();
+		SymbolTableOld symbols = new SymbolTableOld();
 		symbols.register(PrimitiveComponent.class);
 
 		Class<?> type = PrimitiveComponent.class;
 		for (Field f : type.getDeclaredFields()) {
-			if (SymbolTable.isValid(f)) {
+			if (SymbolTableOld.isValid(f)) {
 				assertNotNull(symbols.lookup(type, f.getName()));
 			}
 		}

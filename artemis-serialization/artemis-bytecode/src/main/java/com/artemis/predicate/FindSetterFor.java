@@ -1,14 +1,14 @@
 package com.artemis.predicate;
 
-import com.artemis.compile.SymbolTable;
+import com.artemis.compile.SymbolTableOld;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 public class FindSetterFor implements Predicate<Method> {
-	private final SymbolTable.Entry entry;
+	private final SymbolTableOld.Entry entry;
 
-	FindSetterFor(SymbolTable.Entry entry) {
+	FindSetterFor(SymbolTableOld.Entry entry) {
 		this.entry = entry;
 	}
 

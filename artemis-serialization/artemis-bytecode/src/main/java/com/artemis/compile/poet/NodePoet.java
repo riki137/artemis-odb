@@ -1,8 +1,7 @@
 package com.artemis.compile.poet;
 
-import com.artemis.compile.EntityData;
-import com.artemis.compile.Node;
-import com.artemis.compile.SymbolTable;
+import com.artemis.compile.NodeOld;
+import com.artemis.compile.SymbolTableOld;
 import com.artemis.predicate.Predicate;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -10,33 +9,33 @@ import com.squareup.javapoet.CodeBlock;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.artemis.compile.SymbolTable.isBuiltinType;
+import static com.artemis.compile.SymbolTableOld.isBuiltinType;
 import static com.artemis.predicate.FilterIterator.filter;
 import static com.artemis.predicate.Predicates.not;
 import static java.lang.Character.toLowerCase;
 
 public class NodePoet  {
-	final SymbolTable symbols;
+	final SymbolTableOld symbols;
 
 	private List<String> variableNames = new ArrayList<>();
 
-	private static final Predicate<Node> isPrimitiveNode = new Predicate<Node>() {
+	private static final Predicate<NodeOld> isPrimitiveNode = new Predicate<NodeOld>() {
 		@Override
-		public boolean apply(Node node) {
+		public boolean apply(NodeOld node) {
 			return isBuiltinType(node.meta.type);
 		}
 	};
 
-	private static final Predicate<Node> isTrivial = new Predicate<Node>() {
+	private static final Predicate<NodeOld> isTrivial = new Predicate<NodeOld>() {
 		@Override
-		public boolean apply(Node node) {
+		public boolean apply(NodeOld node) {
 			if (isBuiltinType(node.meta.type))
 				return true;
 
 			if (node.children().isEmpty())
 				return false;
 
-			for (Node noSerializer : filter(node.children(), not(isTrivial))) {
+			for (NodeOld noSerializer : filter(node.children(), not(isTrivial))) {
 				System.out.println("missing serializer for: " + noSerializer);
 				return false;
 			}
@@ -45,18 +44,18 @@ public class NodePoet  {
 		}
 	};
 
-	public NodePoet(SymbolTable symbols) {
+	public NodePoet(SymbolTableOld symbols) {
 		this.symbols = symbols;
 	}
 
-	public CodeBlock generate(Node node, SymbolTable.Entry symbol) {
+	public CodeBlock generate(NodeOld node, SymbolTableOld.Entry symbol) {
 		CodeBlock.Builder builder = CodeBlock.builder();
 		write(node, symbol, "c", builder);
 		return builder.build();
 	}
 
-	private void write(Node node,
-	                   SymbolTable.Entry symbol,
+	private void write(NodeOld node,
+	                   SymbolTableOld.Entry symbol,
 	                   String ownerVariable,
 	                   CodeBlock.Builder out) {
 
@@ -68,8 +67,8 @@ public class NodePoet  {
 			String methodName = symbol.owner.getSimpleName() + "_" + symbol.field;
 			out.addStatement("$L($N, $S)", methodName, ownerVariable, node.payload);
 		} else if (isTrivial.apply(node)) {
-			for (Node child : node.children()) {
-				SymbolTable.Entry nextSymbol = symbols.lookup(node.meta.type, child.meta.field);
+			for (NodeOld child : node.children()) {
+				SymbolTableOld.Entry nextSymbol = symbols.lookup(node.meta.type, child.meta.field);
 				write(child, nextSymbol, nextSymbol.field, out);
 			}
 		}
@@ -77,7 +76,7 @@ public class NodePoet  {
 //			.addStatement("e$")
 	}
 
-	private String allocateVariable(Node node) {
+	private String allocateVariable(NodeOld node) {
 		String name = node.meta.type.getSimpleName();
 		name = toLowerCase(name.charAt(0)) + name.substring(1);
 		name += node.hashCode();

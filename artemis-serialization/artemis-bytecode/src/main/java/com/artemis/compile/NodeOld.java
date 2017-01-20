@@ -8,48 +8,48 @@ import java.util.List;
  * data structure, linking the hierarchy back to the original
  * java types.</p>
  */
-public final class Node {
+public final class NodeOld {
 	public final Meta meta;
 	public final Object payload;
-	private final List<Node> children = new ArrayList<>();
+	private final List<NodeOld> children = new ArrayList<>();
 
-	Node(Class<?> type, String field, Object payload) {
+	NodeOld(Class<?> type, String field, Object payload) {
 		meta = new Meta(type, field);
 		this.payload = payload;
 	}
 
-	public List<Node> children() {
+	public List<NodeOld> children() {
 		return children;
 	}
 
-	public boolean add(Node node) {
+	public boolean add(NodeOld node) {
 		return children.add(node);
 	}
 
-	public static Node node(Class<?> type,
-	                        Node... children) {
+	public static NodeOld node(Class<?> type,
+	                           NodeOld... children) {
 
-		Node n = new Node(type, null, null);
-		for (Node child : children)
+		NodeOld n = new NodeOld(type, null, null);
+		for (NodeOld child : children)
 			n.children.add(child);
 
 		return n;
 	}
 
-	public static Node node(Class<?> type,
-	                        String field,
-	                        Node... children) {
+	public static NodeOld node(Class<?> type,
+	                           String field,
+	                           NodeOld... children) {
 
 		return node(type, field, null, children);
 	}
 
-	public static Node node(Class<?> type,
-	                        String field,
-	                        Object payload,
-	                        Node... children) {
+	public static NodeOld node(Class<?> type,
+	                           String field,
+	                           Object payload,
+	                           NodeOld... children) {
 
-		Node n = new Node(type, field, payload);
-		for (Node child : children)
+		NodeOld n = new NodeOld(type, field, payload);
+		for (NodeOld child : children)
 			n.children.add(child);
 
 		return n;
@@ -74,7 +74,7 @@ public final class Node {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		Node node = (Node) o;
+		NodeOld node = (NodeOld) o;
 
 		if (!meta.equals(node.meta))
 			return false;
@@ -107,7 +107,7 @@ public final class Node {
 		sb.append(String.format(format, field, meta.type.getSimpleName(), payload));
 
 		prepend += "    ";
-		for (Node child : children)
+		for (NodeOld child : children)
 			child.toStringBuilder(sb, prepend);
 
 		return sb;

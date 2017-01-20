@@ -1,9 +1,9 @@
 package com.artemis.component;
 
 import com.artemis.Component;
-import com.artemis.compile.Node;
+import com.artemis.compile.NodeOld;
 
-import static com.artemis.compile.Node.node;
+import static com.artemis.compile.NodeOld.node;
 
 public class PrimitiveComponent extends Component {
 	public String text = "zero";
@@ -16,7 +16,7 @@ public class PrimitiveComponent extends Component {
 	public float aFloat = 7f;
 	public double aDouble = 8.;
 
-	public static Node expected =
+	public static NodeOld expected =
 		node(PrimitiveComponent.class,
 			node(String.class,  "text",    "zero"),
 			node(long.class,    "aLong",   1L),

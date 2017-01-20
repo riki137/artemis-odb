@@ -8,15 +8,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonWriter;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.lang.model.element.Modifier;
-
-import static com.artemis.compile.SymbolTable.unbox;
+import static com.artemis.compile.SymbolTableOld.unbox;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -31,8 +27,8 @@ public class NodeFactoryTest {
 
 	@Test
 	public void marshall_simple() throws Exception {
-		SymbolTable symbols = new SymbolTable();
-		NodeFactory nodeFactory = new NodeFactory(symbols);
+		SymbolTableOld symbols = new SymbolTableOld();
+		NodeFactoryOld nodeFactory = new NodeFactoryOld(symbols);
 
 		assertEquals(PrimitiveComponent.expected,
 			nodeFactory.create(new PrimitiveComponent()));
@@ -40,8 +36,8 @@ public class NodeFactoryTest {
 
 	@Test
 	public void marshall_simpleish() throws Exception {
-		SymbolTable symbols = new SymbolTable();
-		NodeFactory nodeFactory = new NodeFactory(symbols);
+		SymbolTableOld symbols = new SymbolTableOld();
+		NodeFactoryOld nodeFactory = new NodeFactoryOld(symbols);
 
 		assertEquals(PositionXy.expected,
 			nodeFactory.create(new PositionXy()));
@@ -78,16 +74,16 @@ public class NodeFactoryTest {
 	public void test_generate_setter() {
 		Vector2 objectToTest = new Vector2(0xdead, 0xc0de);
 
-		SymbolTable symbols = new SymbolTable();
+		SymbolTableOld symbols = new SymbolTableOld();
 		symbols.register(objectToTest.getClass());
-		NodeFactory factory = new NodeFactory(symbols);
+		NodeFactoryOld factory = new NodeFactoryOld(symbols);
 
-		Node n = factory.create(objectToTest);
+		NodeOld n = factory.create(objectToTest);
 
 		MutationGraph mutationGraph = new MutationGraph(symbols);
 		mutationGraph.add(null, n);
 
-		for (SymbolTable.Entry entry : mutationGraph.getRegistered()) {
+		for (SymbolTableOld.Entry entry : mutationGraph.getRegistered()) {
 //			MethodSpec methodSpec = FieldWriters.generate(entry);
 
 //			System.out.println(methodSpec);
@@ -95,7 +91,7 @@ public class NodeFactoryTest {
 		}
 	}
 
-	private static String name(Node node) {
+	private static String name(NodeOld node) {
 		return node.meta.type.getSimpleName();
 	}
 
@@ -110,23 +106,23 @@ public class NodeFactoryTest {
 	}
 
 	private void assertNodeSymmetry(Object object) throws Exception {
-		SymbolTable symbols = new SymbolTable();
+		SymbolTableOld symbols = new SymbolTableOld();
 		symbols.register(object.getClass());
-		NodeFactory factory = new NodeFactory(symbols);
+		NodeFactoryOld factory = new NodeFactoryOld(symbols);
 
-		Node expected = toNodeViaJson(object);
+		NodeOld expected = toNodeViaJson(object);
 		assertEquals(expected, factory.create(object));
 	}
 
-	private Node toNodeViaJson(Object object) {
+	private NodeOld toNodeViaJson(Object object) {
 		String json = this.json.prettyPrint(object);
-		SymbolTable symbols = new SymbolTable();
+		SymbolTableOld symbols = new SymbolTableOld();
 		symbols.register(object.getClass());
-		NodeFactory nodeFactory = new NodeFactory(symbols);
+		NodeFactoryOld nodeFactory = new NodeFactoryOld(symbols);
 
-		Node node = nodeFactory.create(object.getClass(), new JsonReader().parse(json));
-		for (Node n : node.children()) {
-			if (SymbolTable.isBuiltinType(n.meta.type)) {
+		NodeOld node = nodeFactory.create(object.getClass(), new JsonReader().parse(json));
+		for (NodeOld n : node.children()) {
+			if (SymbolTableOld.isBuiltinType(n.meta.type)) {
 				assertEquals(n.toString(),
 					widen(n.meta.type),
 					widen(unbox(n.payload.getClass())));
@@ -137,12 +133,12 @@ public class NodeFactoryTest {
 		return node;
 	}
 
-	private void assertNodeEquals(Class<?> object, Node expected) throws Exception {
+	private void assertNodeEquals(Class<?> object, NodeOld expected) throws Exception {
 		assertNodeEquals(object.newInstance(), expected);
 	}
 
-	private void assertNodeEquals(Object object, Node expected) throws Exception {
-		Node node = toNodeViaJson(object);
+	private void assertNodeEquals(Object object, NodeOld expected) throws Exception {
+		NodeOld node = toNodeViaJson(object);
 		assertEquals(node.toString(), expected, node);
 	}
 

@@ -1,6 +1,6 @@
 package com.artemis.compile.poet;
 
-import com.artemis.compile.SymbolTable;
+import com.artemis.compile.SymbolTableOld;
 import com.artemis.predicate.Predicate;
 
 import java.lang.reflect.Field;
@@ -18,17 +18,17 @@ final class SymbolUtil {
 			toLowerCase(name.charAt(0)), name.substring(1));
 	}
 
-	static String mapperName(SymbolTable.Entry entry) {
+	static String mapperName(SymbolTableOld.Entry entry) {
 		return mapperName(entry.type);
 	}
 
-	static boolean isWritable(SymbolTable.Entry entry) {
+	static boolean isWritable(SymbolTableOld.Entry entry) {
 		Field f = field(entry);
 		return f != null
 			&& 0 != (Modifier.PUBLIC & f.getModifiers());
 	}
 
-	static Field field(SymbolTable.Entry entry) {
+	static Field field(SymbolTableOld.Entry entry) {
 		String field = entry.field;
 
 		Class<?> type = entry.owner;
@@ -42,7 +42,7 @@ final class SymbolUtil {
 		return null;
 	}
 
-	static Method method(SymbolTable.Entry entry, Predicate<Method> filter) {
+	static Method method(SymbolTableOld.Entry entry, Predicate<Method> filter) {
 		Class<?> type = entry.owner;
 		do {
 			for (Method m : type.getDeclaredMethods()) {

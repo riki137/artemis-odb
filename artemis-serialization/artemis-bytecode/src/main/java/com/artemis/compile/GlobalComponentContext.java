@@ -8,7 +8,7 @@ import java.util.*;
 
 /**
  * Maintains name-type mappings for {@link SaveFileFormat#componentIdentifiers},
- * and registers any encountered type with the {@link SymbolTable}.
+ * and registers any encountered type with the {@link SymbolTableOld}.
  */
 public class GlobalComponentContext {
 	private final Map<String, Class<?>> keyToComponent = new HashMap<>();

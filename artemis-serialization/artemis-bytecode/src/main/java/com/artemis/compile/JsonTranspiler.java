@@ -7,9 +7,9 @@ import com.badlogic.gdx.utils.JsonValue;
 // yes, yes - not a compiler, and transpiler is (maybe) not a word,
 // but the vocabulary makes things a bit easier to navigate.
 public class JsonTranspiler {
-	private final SymbolTable symbols = new SymbolTable();
+	private final SymbolTableOld symbols = new SymbolTableOld();
 	private final GlobalComponentContext components = new GlobalComponentContext();
-	private final NodeFactory factory = new NodeFactory(symbols);
+	private final NodeFactoryOld factory = new NodeFactoryOld(symbols);
 	private final MutationGraph mutationGraph = new MutationGraph(symbols);
 
 	public void compile(JsonValue json) {
@@ -24,7 +24,7 @@ public class JsonTranspiler {
 
 		EntityData entityData = new EntityData(json, components, factory);
 		for (EntityData.Entry data : entityData.entities) {
-			for (Node n : data.components) {
+			for (NodeOld n : data.components) {
 				mutationGraph.add(null, n);
 			}
 		}

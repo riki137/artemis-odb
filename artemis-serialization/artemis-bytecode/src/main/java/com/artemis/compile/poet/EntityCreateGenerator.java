@@ -2,8 +2,8 @@ package com.artemis.compile.poet;
 
 import com.artemis.World;
 import com.artemis.compile.EntityData;
-import com.artemis.compile.Node;
-import com.artemis.compile.SymbolTable;
+import com.artemis.compile.NodeOld;
+import com.artemis.compile.SymbolTableOld;
 import com.artemis.io.EntityPoolFactory;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -15,11 +15,11 @@ import java.util.List;
 public class EntityCreateGenerator implements SourceGenerator {
 	private final NodePoet nodePoet;
 	private final List<EntityData.Entry> entities;
-	private final SymbolTable symbols;
+	private final SymbolTableOld symbols;
 
 	public EntityCreateGenerator(List<EntityData.Entry> entities,
 	                             NodePoet nodePoet,
-	                             SymbolTable symbols) {
+	                             SymbolTableOld symbols) {
 
 		this.nodePoet = nodePoet;
 		this.entities = entities;
@@ -32,13 +32,13 @@ public class EntityCreateGenerator implements SourceGenerator {
 //			code.add(generate(entity));
 			CreateEntity creator = new CreateEntity();
 			code.add(creator.generate(entity));
-			for (Node component : entity.components) {
+			for (NodeOld component : entity.components) {
 				code.add("{\n").indent();
 				code.addStatement("$T c = $L.get(e$L)",
 					component.meta.type,
 					SymbolUtil.mapperName(component.meta.type),
 					entity.entityId);
-				SymbolTable.Entry symbol = symbols.lookup(component);
+				SymbolTableOld.Entry symbol = symbols.lookup(component);
 				code.add(nodePoet.generate(component, symbol));
 				code.unindent().add("}\n");
 			}

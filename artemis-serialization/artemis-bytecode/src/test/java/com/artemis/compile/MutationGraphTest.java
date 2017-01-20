@@ -5,14 +5,14 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.artemis.compile.Node.node;
+import static com.artemis.compile.NodeOld.node;
 import static org.junit.Assert.*;
 
 public class MutationGraphTest {
 
 	@Test
 	public void test_simple_component() {
-		SymbolTable symbols = new SymbolTable();
+		SymbolTableOld symbols = new SymbolTableOld();
 		symbols.register(PrimitiveComponent.class);
 
 		MutationGraph graph = new MutationGraph(symbols);
@@ -22,7 +22,7 @@ public class MutationGraphTest {
 				node(String.class,  "text",    "zero"),
 				node(int.class,     "aInt",    2)));
 
-		List<SymbolTable.Entry> registered = graph.getRegistered();
+		List<SymbolTableOld.Entry> registered = graph.getRegistered();
 		assertEquals(2, registered.size());
 
 		graph.add(null, PrimitiveComponent.expected);

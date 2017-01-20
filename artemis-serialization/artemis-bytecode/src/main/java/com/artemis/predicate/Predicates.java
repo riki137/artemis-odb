@@ -1,6 +1,6 @@
 package com.artemis.predicate;
 
-import com.artemis.compile.SymbolTable;
+import com.artemis.compile.SymbolTableOld;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class Predicates {
-	public static Predicate<Method> findSetterFor(SymbolTable.Entry entry) {
+	public static Predicate<Method> findSetterFor(SymbolTableOld.Entry entry) {
 		return new FindSetterFor(entry);
 	}
 

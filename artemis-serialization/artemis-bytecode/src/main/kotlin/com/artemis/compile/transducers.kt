@@ -3,16 +3,26 @@ package com.artemis.compile
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.JsonValue
-import net.onedaybeard.transducers.Transducer
-import net.onedaybeard.transducers.filter
-import net.onedaybeard.transducers.map
-import net.onedaybeard.transducers.mapcat
+import net.onedaybeard.transducers.*
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier.STATIC
 import java.lang.reflect.Modifier.TRANSIENT
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.reflect.KClass
 
 private val jsonReader = CoreJsonReader()
+
+@Suppress("UNCHECKED_CAST")
+fun <R : MutableList<A>, A, B> intoList(xf: Transducer<A, B>,
+                                        input: Iterable<B>): R =
+	transduce(xf, object : ReducingFunction<R, A> {
+		override fun apply(result: R,
+		                   input: A,
+		                   reduced: AtomicBoolean): R {
+			result.add(input)
+			return result
+		}
+	}, (mutableListOf<A>() as R), input)
 
 operator fun <A, B, C> Transducer<B, C>.plus(right: Transducer<A, in B>): Transducer<A, C>
 	= this.comp(right)

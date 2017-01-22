@@ -94,8 +94,9 @@ fun Any.readField(symbol: Symbol): Any? {
 }
 
 fun toNode(obj: Any, name: String? = null): Node {
+
 	return transduce(xf = symbolToNode(obj),
-	                 rf = { result, input -> result.apply { add(input) } },
+	                 rf = buildNodeStep,
 	                 init = Node(type = obj.javaClass, field = name),
 	                 input = symbolsOf(obj))
 }
@@ -105,7 +106,7 @@ fun toNode(type: Class<*>,
            name: String? = null): Node {
 
 	return transduce(xf = symbolToNode(json) + sanitizeNodes,
-	                 rf = { result, input -> result.apply { add(input) } },
+	                 rf = buildNodeStep,
 	                 init = Node(type = type, field = name),
 	                 input = symbolsOf(type.kotlin))
 }
@@ -113,3 +114,6 @@ fun toNode(type: Class<*>,
 fun isBuiltInType(symbol: Symbol): Boolean {
 	return symbol.type.isPrimitive || symbol.type == String::class.java
 }
+
+
+private val buildNodeStep = { result: Node, input: Node -> result.apply { add(input) } }

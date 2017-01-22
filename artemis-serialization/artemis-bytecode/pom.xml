@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>net.onedaybeard.transducers</groupId>
 			<artifactId>transducers</artifactId>
-			<version>0.1.0</version>
+			<version>0.2.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
@@ -84,6 +84,12 @@
 						<goals>
 							<goal>test-compile</goal>
 						</goals>
+						<configuration>
+							<sourceDirs>
+								<source>src/test/java</source>
+								<source>src/test/kotlin</source>
+							</sourceDirs>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

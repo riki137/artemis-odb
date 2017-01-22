@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Data structure for mapping json into an intermediate
- * data structure, linking the hierarchy back to the original
- * java types.</p>
+ * Intermediate object graph representing mapped json and/or objects.
  */
 public final class NodeOld {
 	public final Meta meta;

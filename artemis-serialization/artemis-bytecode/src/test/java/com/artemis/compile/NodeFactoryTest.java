@@ -142,7 +142,7 @@ public class NodeFactoryTest {
 		assertEquals(node.toString(), expected, node);
 	}
 
-	static Class<?> widen(Class<?> t) {
+	public static Class<?> widen(Class<?> t) {
 		if (t == short.class || t == char.class || t == byte.class)
 			return int.class;
 

@@ -31,7 +31,7 @@ public class SymbolTableOld {
 		return fieldType.isPrimitive() || fieldType == String.class;
 	}
 
-	static Class<?> unbox(Class<?> t) {
+	public static Class<?> unbox(Class<?> t) {
 		if (Long.class == t)
 			return long.class;
 		else if (Integer.class == t)

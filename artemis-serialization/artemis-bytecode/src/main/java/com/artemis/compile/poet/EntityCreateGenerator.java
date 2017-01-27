@@ -1,7 +1,7 @@
 package com.artemis.compile.poet;
 
 import com.artemis.World;
-import com.artemis.compile.EntityData;
+import com.artemis.compile.EntityDataOld;
 import com.artemis.compile.NodeOld;
 import com.artemis.compile.SymbolTableOld;
 import com.artemis.io.EntityPoolFactory;
@@ -14,10 +14,10 @@ import java.util.List;
 
 public class EntityCreateGenerator implements SourceGenerator {
 	private final NodePoet nodePoet;
-	private final List<EntityData.Entry> entities;
+	private final List<EntityDataOld.Entry> entities;
 	private final SymbolTableOld symbols;
 
-	public EntityCreateGenerator(List<EntityData.Entry> entities,
+	public EntityCreateGenerator(List<EntityDataOld.Entry> entities,
 	                             NodePoet nodePoet,
 	                             SymbolTableOld symbols) {
 
@@ -26,9 +26,9 @@ public class EntityCreateGenerator implements SourceGenerator {
 		this.symbols = symbols;
 	}
 
-	protected CodeBlock generate(List<EntityData.Entry> entries) {
+	protected CodeBlock generate(List<EntityDataOld.Entry> entries) {
 		CodeBlock.Builder code = CodeBlock.builder();
-		for (EntityData.Entry entity : entries) {
+		for (EntityDataOld.Entry entity : entries) {
 //			code.add(generate(entity));
 			CreateEntity creator = new CreateEntity();
 			code.add(creator.generate(entity));
@@ -62,9 +62,9 @@ public class EntityCreateGenerator implements SourceGenerator {
 		builder.addMethod(method.build());
 	}
 
-	private static class CreateEntity implements BodyFactory<EntityData.Entry> {
+	private static class CreateEntity implements BodyFactory<EntityDataOld.Entry> {
 		@Override
-		public CodeBlock generate(EntityData.Entry entry) {
+		public CodeBlock generate(EntityDataOld.Entry entry) {
 			int id = entry.entityId;
 
 			return CodeBlock.builder()

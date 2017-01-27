@@ -14,15 +14,60 @@ private val jsonReader = CoreJsonReader()
 
 @Suppress("UNCHECKED_CAST")
 fun <R : MutableList<A>, A, B> intoList(xf: Transducer<A, B>,
-                                        input: Iterable<B>): R =
-	transduce(xf, object : ReducingFunction<R, A> {
+                                        init: R = mutableListOf<A>() as R,
+                                        input: Iterable<B>): R {
+	return transduce(xf, object : ReducingFunction<R, A> {
 		override fun apply(result: R,
 		                   input: A,
 		                   reduced: AtomicBoolean): R {
 			result.add(input)
 			return result
 		}
-	}, (mutableListOf<A>() as R), input)
+	}, init, input)
+}
+
+
+@Suppress("UNUSED")
+class Key<K> // <-- hah!!! type infer it below!
+
+@Suppress("UNCHECKED_CAST")
+fun <R, A, B, K> intoMap(xf: Transducer<A, B>,
+                         init: R = mutableMapOf<K, A>() as R,
+                         keyType: Key<K> = Key<K>(),
+                         input: Iterable<B>): R
+		where R : Map<K, A> {
+
+	val rf = object : ReducingFunction<R, A> {
+		override fun apply(result: R,
+		                   input: A,
+		                   reduced: AtomicBoolean): R = result
+	}
+
+	return transduce(xf, rf, init, input)
+}
+
+fun <A, K> groupBy(f: (A) -> K) = object : Transducer<Map<K, Iterable<A>>, A> {
+	override fun <R> apply(rf: ReducingFunction<R, Map<K, Iterable<A>>>): ReducingFunction<R, A> {
+		return object : ReducingFunction<R, A> {
+			override fun apply(): R = rf.apply()
+
+			override fun apply(result: R,
+			                   input: A,
+			                   reduced: AtomicBoolean): R {
+
+				val key: K = f(input)
+
+				@Suppress("UNCHECKED_CAST")
+				val group = result as MutableMap<K, MutableList<A>>
+				val list = group[key] ?: mutableListOf<A>().apply { group[key] = this }
+				list += input
+
+				return result
+			}
+		}
+	}
+}
+
 
 operator fun <A, B, C> Transducer<B, C>.plus(right: Transducer<A, in B>): Transducer<A, C>
 	= this.comp(right)

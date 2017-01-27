@@ -22,8 +22,8 @@ public class JsonTranspiler {
 
 //		List<EntityData> entityNodes = parseEntityData(json, factory);
 
-		EntityData entityData = new EntityData(json, components, factory);
-		for (EntityData.Entry data : entityData.entities) {
+		EntityDataOld entityData = new EntityDataOld(json, components, factory);
+		for (EntityDataOld.Entry data : entityData.entities) {
 			for (NodeOld n : data.components) {
 				mutationGraph.add(null, n);
 			}

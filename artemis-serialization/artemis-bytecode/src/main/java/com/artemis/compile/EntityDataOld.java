@@ -7,12 +7,12 @@ import java.util.*;
 
 /**
  */
-public class EntityData {
+public class EntityDataOld {
 	public final List<Entry> entities;
 
-	protected EntityData(JsonValue json,
-	                     GlobalComponentContext components,
-	                     NodeFactoryOld factory) {
+	protected EntityDataOld(JsonValue json,
+	                        GlobalComponentContext components,
+	                        NodeFactoryOld factory) {
 
 		entities = parseEntityData(json, components, factory);
 	}

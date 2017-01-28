@@ -16,3 +16,14 @@ fun symbolsOf(type: KClass<*>): List<Symbol> {
 	return intoList(xf = allFields + validFields + asSymbolsOf(type),
 	                input = listOf(type))
 }
+
+//fun symbolsOf(vararg types: KClass<*>): List<Symbol> {
+//
+//	val fields = allFields + validFields
+//
+//	makePair(left = { input: KClass<*> -> input },
+//	         right = { input: KClass<*> -> input })
+//
+//	return intoList(xf = makePair({input: KClass<*> -> input}) + allFields + validFields + asSymbolsOf(type),
+//	                input = types.asIterable())
+//}

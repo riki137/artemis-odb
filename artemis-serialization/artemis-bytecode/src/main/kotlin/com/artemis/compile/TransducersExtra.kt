@@ -3,7 +3,9 @@ package com.artemis.compile
 import net.onedaybeard.transducers.ReducingFunction
 import net.onedaybeard.transducers.Transducer
 import net.onedaybeard.transducers.transduce
+import java.lang.reflect.Field
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.reflect.KClass
 
 
 @Suppress("UNCHECKED_CAST")
@@ -23,6 +25,9 @@ fun <R : MutableList<A>, A, B> intoList(xf: Transducer<A, B>,
 
 @Suppress("UNUSED")
 class Key<K> // <-- hah! type infer it below
+class Dummy {
+    val field : Field = Dummy::class.java.getDeclaredField("field")
+}
 
 @Suppress("UNCHECKED_CAST")
 fun <R, A, B, K> intoMap(xf: Transducer<A, B>,
@@ -52,6 +57,8 @@ inline fun <reified A : Any, B> subduce(xf: Transducer<A, B>): ReducingFunction<
                 Long::class      -> 0 as A
                 Float::class     -> 0 as A
                 Double::class    -> 0 as A
+                KClass::class    -> KClass::class as A
+                Field::class     -> Dummy().field as A
                 else             -> A::class.java.newInstance()
             }
         }
@@ -81,6 +88,8 @@ inline fun <A, reified K, reified V> makePair(left: Transducer<K, A>,
 
                     val l = leftRf.apply(leftRf.apply(), input, reduced)
                     val r = rightRf.apply(rightRf.apply(), input, reduced)
+
+                    println("reduced: $reduced, r=$r, input=$input ")
 
                     return rf.apply(result, Pair(l, r), reduced)
                 }

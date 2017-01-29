@@ -3,7 +3,10 @@ package com.artemis.compile
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.JsonValue
-import net.onedaybeard.transducers.*
+import net.onedaybeard.transducers.Transducer
+import net.onedaybeard.transducers.filter
+import net.onedaybeard.transducers.map
+import net.onedaybeard.transducers.mapcat
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier.STATIC
 import java.lang.reflect.Modifier.TRANSIENT
@@ -40,6 +43,12 @@ val toJsonValue: Transducer<JsonValue, String>
 	= map { JsonReader().parse(it) }
 
 fun asSymbolsOf(owner: KClass<*>) = map { f: Field -> Symbol(owner.java, f.name, f.type) }
+
+fun asSymbolsOf() = map { f: Pair<KClass<*>, Field> ->
+    Symbol(f.first.java,
+           f.second.name,
+           f.second.type).apply(::println)
+}
 
 
 fun symbolToNode(json: JsonValue) : Transducer<Node, Symbol> {

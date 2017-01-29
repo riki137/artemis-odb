@@ -19,16 +19,21 @@ fun jsonToArchetype(nameToComponent: Map<String, Class<out Component>>) = map { 
 	Archetype(json.name.toInt(), components as List<Class<Component>>)
 }
 
-fun jsonToComponent(type: Class<*>, json: JsonValue) {
+fun jsonToEntityData(lookup: Map<String, Class<out Component>>) = map { json: JsonValue ->
+    val groups = json["groups"]
+             ?.asIterable()
+             ?.map(JsonValue::asString) ?: listOf()
 
-}
+    val nodes = json["components"].child
+            .asIterable()
+            .map { toNode(lookup[it.name] as Class<*>, it) }
 
-fun jsonToEntityData(nameToComponent: Map<String, Class<out Component>>) = map { json: JsonValue ->
-	EntityData(entityId   = json.name.toInt(),
-	           archetype  = json["archetype"].asInt(),
-	           tag        = json["tag"]?.asString(),
-	           groups     = TODO("groups"),
-	           components = TODO("components"))
+    EntityData(entityId = json.name.toInt(),
+               archetype = json["archetype"].asInt(),
+               key = json["key"]?.asString(),
+               tag = json["tag"]?.asString(),
+               groups = groups,
+               components = nodes)
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -37,22 +42,24 @@ val componentMapping = map { json: JsonValue ->
 }
 
 fun entitiesOf(json: JsonValue,
-               nameToComponent: Map<String, Class<Component>> = componentIdentifiers(json)) : List<EntityData> {
+               nameToComponent: Map<String, Class<Component>> = componentIdentifiers(json))
+        : List<EntityData> {
 
 	return intoList(xf = jsonToEntityData(nameToComponent),
 	                input = json["entities"])
 }
 
 fun archetypesOf(json: JsonValue,
-                 nameToComponent: Map<String, Class<Component>> = componentIdentifiers(json)) : List<Archetype> {
+                 nameToComponent: Map<String, Class<Component>> = componentIdentifiers(json))
+        : List<Archetype> {
 
 	return intoList(xf = jsonToArchetype(nameToComponent),
 	                input = json["archetypes"])
 }
 
-fun componentIdentifiers(json: JsonValue) : Map<String, Class<Component>> {
-	return intoList(xf = componentMapping,
-	                input = json["componentIdentifiers"]).toMap()
+fun componentIdentifiers(json: JsonValue): Map<String, Class<Component>> {
+    return intoList(xf = componentMapping,
+                    input = json["componentIdentifiers"]).toMap()
 }
 
 

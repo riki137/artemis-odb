@@ -13,9 +13,18 @@ fun symbolsOf(obj: Any): List<Symbol> {
 	return symbolsOf(obj.javaClass.kotlin)
 }
 
-fun symbolsOf(type: KClass<*>): List<Symbol> {
-	return intoList(xf = allFields + validFields + asSymbolsOf(type),
+fun symbolsOf(type: Class<*>): List<Symbol> {
+	return intoList(xf = javaToKotlin + allFields + validFields + asSymbolsOf(type.kotlin),
 	                input = listOf(type))
+}
+
+fun symbolsOf(types: Iterable<Class<*>>): List<Symbol> {
+    val toFields = javaToKotlin + allFields + validFields
+    return mutableListOf<Symbol>().apply {
+        types.forEach { into(toFields + asSymbolsOf(it.kotlin),
+                             listOf(it))
+        }
+    }
 }
 
 @Deprecated("not working as intended when count(V) !+ count(K)")

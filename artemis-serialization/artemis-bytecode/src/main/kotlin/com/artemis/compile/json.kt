@@ -61,8 +61,3 @@ fun componentIdentifiers(json: JsonValue): Map<String, Class<Component>> {
     return intoList(xf = componentMapping,
                     input = json["componentIdentifiers"]).toMap()
 }
-
-
-fun componentsOf(components: JsonValue, symbols: Map<String, Class<*>>) : List<Node> {
-	return listOf()
-}

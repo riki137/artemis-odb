@@ -81,7 +81,7 @@ private val sanitizeNodes: Transducer<Node, Node> = map { n ->
 fun symbolToNode(owner: Any) : Transducer<Node, Symbol> {
 	return map { symbol: Symbol ->
 		val value = owner.readField(symbol)
-		if (isBuiltInType(symbol)) {
+		if (symbol.isBuiltInType()) {
 			Node(symbol.type, symbol.field, value)
 		} else {
 			toNode(value!!, symbol.field)
@@ -111,9 +111,14 @@ fun toNode(type: Class<*>,
 	                 input = symbolsOf(type.kotlin))
 }
 
-fun isBuiltInType(symbol: Symbol): Boolean {
-	return symbol.type.isPrimitive || symbol.type == String::class.java
+fun Symbol.isBuiltInType(): Boolean {
+    return isBuiltInType(this.type)
+}
+
+fun isBuiltInType(t: Class<*>): Boolean {
+    return t.isPrimitive || t == String::class.java
 }
 
 
-private val buildNodeStep = { result: Node, input: Node -> result.apply { add(input) } }
+private val buildNodeStep = { result: Node,
+                              input: Node -> result.apply { add(input) } }

@@ -14,7 +14,10 @@ import kotlin.reflect.KClass
 
 private val jsonReader = CoreJsonReader()
 
+inline fun <reified T : Any> cast(): Transducer<T, Any> = map { it as T }
+
 val objectToType  = map { t: Any -> t.javaClass.kotlin }
+val javaToKotlin  = map { t: Class<*> -> t.kotlin }
 val kotlinToJava  = map { t: KClass<*> -> t.java }
 val classToFields = mapcat { t: Class<*> -> t.declaredFields.asIterable() }
 val withParents = mapcat { t: Class<*> ->
@@ -51,13 +54,21 @@ fun asSymbolsOf() = map { f: Pair<KClass<*>, Field> ->
 }
 
 
-fun symbolToNode(json: JsonValue) : Transducer<Node, Symbol> {
-	return map { symbol: Symbol ->
-		if (isBuiltInType(symbol)) {
-			val payload = jsonReader.read(symbol.type, json[symbol.field])
-			Node(symbol.type, symbol.field, payload)
-		} else {
-			toNode(symbol.type, json[symbol.field], symbol.field)
-		}
-	}
+fun symbolToNode(json: JsonValue): Transducer<Node, Symbol> {
+    return map { symbol: Symbol ->
+        if (symbol.isBuiltInType()) {
+            val payload = jsonReader.read(symbol.type, json[symbol.field])
+            Node(symbol.type, symbol.field, payload)
+        } else {
+            toNode(symbol.type, json[symbol.field], symbol.field)
+        }
+    }
 }
+
+fun nodesToSymbols(allSymbols: List<Symbol>): Transducer<Symbol, EntityData> {
+    val componentNodes = mapcat(EntityData::components)
+    val toSymbol = mapcat { n: Node -> asSymbols(node = n, symbols = allSymbols) }
+
+    return componentNodes + toSymbol
+}
+

@@ -15,6 +15,8 @@ import kotlin.reflect.KClass
 private val jsonReader = CoreJsonReader()
 
 inline fun <reified T : Any> cast(): Transducer<T, Any> = map { it as T }
+inline fun <reified T : Any> isAssignableFrom() =
+    filter { a: Class<*> -> T::class.java.isAssignableFrom(a) }
 
 val objectToType  = map { t: Any -> t.javaClass.kotlin }
 val javaToKotlin  = map { t: Class<*> -> t.kotlin }

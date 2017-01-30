@@ -10,12 +10,12 @@ data class Symbol (val owner: Class<*>, val field: String, val type: Class<*>) {
 }
 
 fun symbolsOf(obj: Any): List<Symbol> {
-	return symbolsOf(obj.javaClass.kotlin)
+    return symbolsOf(obj.javaClass)
 }
 
 fun symbolsOf(type: Class<*>): List<Symbol> {
-	return intoList(xf = javaToKotlin + allFields + validFields + asSymbolsOf(type.kotlin),
-	                input = listOf(type))
+    return intoList(xf = javaToKotlin + allFields + validFields + asSymbolsOf(type.kotlin),
+                    input = listOf(type))
 }
 
 fun symbolsOf(types: Iterable<Class<*>>): List<Symbol> {

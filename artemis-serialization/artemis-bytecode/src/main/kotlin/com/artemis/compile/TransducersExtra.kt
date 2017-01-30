@@ -1,11 +1,34 @@
 package com.artemis.compile
 
 import net.onedaybeard.transducers.ReducingFunction
+import net.onedaybeard.transducers.ReducingFunctionOn
 import net.onedaybeard.transducers.Transducer
 import net.onedaybeard.transducers.transduce
 import java.lang.reflect.Field
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.reflect.KClass
+
+fun <A> distinct(): Transducer<A, A> = object : Transducer<A, A> {
+    override fun <R> apply(rf: ReducingFunction<R, A>) = object : ReducingFunctionOn<R, A, A>(rf) {
+        val intercepted = mutableSetOf<A>()
+
+        override fun apply(result: R,
+                           input: A,
+                           reduced: AtomicBoolean): R {
+
+            if (intercepted.add(input)) {
+                return rf.apply(result, input, reduced)
+            } else {
+                return result
+            }
+        }
+
+        override fun apply(): R {
+            intercepted.clear()
+            return super.apply()
+        }
+    }
+}
 
 
 @Suppress("UNCHECKED_CAST")

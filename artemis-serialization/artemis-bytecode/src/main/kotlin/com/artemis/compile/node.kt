@@ -14,111 +14,99 @@ data class Node(val type: Class<*> = Any::class.java,
                 val payload: Any? = null,
                 val children: MutableList<Node> = mutableListOf()) {
 
-	constructor(type: KClass<*>,
-	            field: String? = null,
-	            payload: Any? = null,
-	            vararg nodes : Node) : this(type.java, field, payload) {
+    constructor(type: KClass<*>,
+                field: String? = null,
+                payload: Any? = null,
+                vararg nodes: Node) : this(type.java, field, payload) {
 
-		children.addAll(nodes)
-	}
+        children.addAll(nodes)
+    }
 
-	constructor(type: KClass<*>,
-	            field: String? = null,
-	            vararg nodes : Node) : this(type.java, field, null) {
+    constructor(type: KClass<*>,
+                field: String? = null,
+                vararg nodes: Node) : this(type.java, field, null) {
 
-		children.addAll(nodes)
-	}
+        children.addAll(nodes)
+    }
 
-	constructor(type: KClass<*>, vararg nodes : Node) : this(type.java) {
-		children.addAll(nodes)
-	}
+    constructor(type: KClass<*>, vararg nodes: Node) : this(type.java) {
+        children.addAll(nodes)
+    }
 
-	fun add(node: Node): Boolean {
-		return children.add(node)
-	}
+    fun add(node: Node): Boolean {
+        return children.add(node)
+    }
 
-	operator fun get(index: Int) : Node {
-		return children[index]
-	}
+    operator fun get(index: Int): Node {
+        return children[index]
+    }
 
-	override fun toString(): String {
-		return format().toString()
-	}
+    override fun toString(): String {
+        return format().toString()
+    }
 
-	private fun format(sb: StringBuilder = StringBuilder(), indent: String = "") : StringBuilder {
-		sb.append("$indent${formatted()}\n")
-		children.forEach { it.format(sb, "$indent    ") }
+    private fun format(sb: StringBuilder = StringBuilder(), indent: String = ""): StringBuilder {
+        sb.append("$indent${formatted()}\n")
+        children.forEach { it.format(sb, "$indent    ") }
 
-		return sb
-	}
+        return sb
+    }
 
-	private fun formatted(): String {
-		val p = payload ; val f = field
+    private fun formatted(): String {
+        val p = payload; val f = field
 
-		val name = type.simpleName
-		return if (f == null && p == null) "($name)"
-		  else if (f == null && p != null) "(${name.padEnd(10)} $p ${p.javaClass.simpleName})"
-		  else if (f != null && p != null) "(${f.padEnd(10)} ${name.padEnd(10)} $p ${p.javaClass.simpleName})"
-		  else                             "(${f!!.padEnd(10)} ${type.simpleName})"
-	}
+        val name = type.simpleName
+        return if (f == null && p == null) "($name)"
+          else if (f == null && p != null) "(${name.padEnd(10)} $p)"
+          else if (f != null && p != null) "(${f.padEnd(10)} ${name.padEnd(10)} $p)"
+          else                             "(${f!!.padEnd(10)} ${type.simpleName})"
+    }
 }
 
 
 private val sanitizeNodes: Transducer<Node, Node> = map { n ->
-	if (n.type == Short::class.java) {
-		Node(n.type,
-		     n.field,
-		     (n.payload as? Integer)?.toShort() ?: n.payload)
-	} else if (n.type == Byte::class.java) {
-		Node(n.type,
-		     n.field,
-		     (n.payload as? Integer)?.toByte() ?: n.payload)
-	} else {
-		n
-	}
+    when (n.type.kotlin) {
+        Short::class -> n.copy(payload = (n.payload as? Int)?.toShort() ?: n.payload)
+        Byte::class  -> n.copy(payload = (n.payload as? Int)?.toByte()  ?: n.payload)
+        else         -> n
+    }
 }
 
-fun symbolToNode(owner: Any) : Transducer<Node, Symbol> {
-	return map { symbol: Symbol ->
-		val value = owner.readField(symbol)
-		if (symbol.isBuiltInType()) {
-			Node(symbol.type, symbol.field, value)
-		} else {
-			toNode(value!!, symbol.field)
-		}
-	}
+fun symbolToNode(owner: Any): Transducer<Node, Symbol> {
+    return map { symbol: Symbol ->
+        val value = owner.readField(symbol)
+        if (symbol.isBuiltInType()) {
+            Node(symbol.type, symbol.field, value)
+        } else {
+            toNode(value!!, symbol.field)
+        }
+    }
 }
 
 fun Any.readField(symbol: Symbol): Any? {
-	return this.javaClass.getField(symbol.field).get(this)
+    return this.javaClass.getField(symbol.field).get(this)
 }
 
 fun toNode(obj: Any, name: String? = null): Node {
-
-	return transduce(xf = symbolToNode(obj),
-	                 rf = buildNodeStep,
-	                 init = Node(type = obj.javaClass, field = name),
-	                 input = symbolsOf(obj))
+    return transduce(xf = symbolToNode(obj),
+                     rf = buildNodeStep,
+                     init = Node(type = obj.javaClass, field = name),
+                     input = symbolsOf(obj))
 }
 
 fun toNode(type: Class<*>,
            json: JsonValue,
            name: String? = null): Node {
 
-	return transduce(xf = symbolToNode(json) + sanitizeNodes,
-	                 rf = buildNodeStep,
-	                 init = Node(type = type, field = name),
-	                 input = symbolsOf(type.kotlin))
+    return transduce(xf = symbolToNode(json) + sanitizeNodes,
+                     rf = buildNodeStep,
+                     init = Node(type = type, field = name),
+                     input = symbolsOf(type))
 }
 
-fun Symbol.isBuiltInType(): Boolean {
-    return isBuiltInType(this.type)
-}
+fun Symbol.isBuiltInType(): Boolean = isBuiltInType(this.type)
 
-fun isBuiltInType(t: Class<*>): Boolean {
-    return t.isPrimitive || t == String::class.java
-}
-
+fun isBuiltInType(t: Class<*>): Boolean = t.isPrimitive || t == String::class.java
 
 private val buildNodeStep = { result: Node,
                               input: Node -> result.apply { add(input) } }

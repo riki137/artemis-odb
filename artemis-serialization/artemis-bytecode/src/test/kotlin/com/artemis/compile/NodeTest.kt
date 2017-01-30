@@ -7,16 +7,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.JsonWriter
-import org.junit.Before
 import org.junit.Test
 
 class NodeTest {
-	private val json: Json = Json(JsonWriter.OutputType.json)
-
-	@Before
-	fun init() {
-		json!!.setUsePrototypes(false)
-	}
+	private val json: Json = Json(JsonWriter.OutputType.json).apply {
+        setUsePrototypes(false)
+    }
 
 	@Test
 	@Throws(Exception::class)

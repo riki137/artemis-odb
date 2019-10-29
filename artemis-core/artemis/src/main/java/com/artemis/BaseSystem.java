@@ -115,7 +115,7 @@ public abstract class BaseSystem {
 	 * @param world
 	 *			the world to set
 	 */
-	protected void setWorld(World world) {
+	public void setWorld(World world) {
 		this.world = world;
 	}
 
@@ -124,7 +124,7 @@ public abstract class BaseSystem {
 	 *
 	 * @return the associated world
 	 */
-	protected World getWorld() {
+	public World getWorld() {
 		return world;
 	}
 

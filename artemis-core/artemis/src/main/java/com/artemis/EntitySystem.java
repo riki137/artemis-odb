@@ -48,11 +48,11 @@ public abstract class EntitySystem extends BaseEntitySystem
 	/**
 	 * Set the world this system works on.
 	 *
-	 * @param world
-	 *			the world to set
-	 */
+     * @param world
+     *			the world to set
+     */
 	@Override
-	protected void setWorld(World world) {
+    public void setWorld(World world) {
 		super.setWorld(world);
 		if(implementsObserver(this, "inserted"))
 			methodFlags |= FLAG_INSERTED;

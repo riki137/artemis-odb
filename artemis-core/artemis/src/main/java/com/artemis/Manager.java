@@ -35,11 +35,11 @@ public abstract class Manager extends BaseSystem {
 	/**
 	 * Set the world this system works on.
 	 *
-	 * @param world
-	 *			the world to set
-	 */
+     * @param world
+     *			the world to set
+     */
 	@Override
-	protected void setWorld(World world) {
+    public void setWorld(World world) {
 		super.setWorld(world);
 		if(implementsObserver(this, "added"))
 			methodFlags |= FLAG_INSERTED;

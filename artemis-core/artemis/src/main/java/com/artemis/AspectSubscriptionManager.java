@@ -37,7 +37,7 @@ public class AspectSubscriptionManager extends BaseSystem {
 	protected void processSystem() {}
 
 	@Override
-	protected void setWorld(World world) {
+	public void setWorld(World world) {
 		super.setWorld(world);
 
 		// making sure the first subscription matches all entities

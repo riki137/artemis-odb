@@ -41,7 +41,7 @@ public abstract class BaseEntitySystem extends BaseSystem
         aspectConfiguration = aspect;
     }
 
-    protected void setWorld(World world) {
+    public void setWorld(World world) {
         super.setWorld(world);
 
         subscription = getSubscription();

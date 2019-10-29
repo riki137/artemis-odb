@@ -15,7 +15,7 @@ import com.artemis.annotations.SkipWire;
  * 
  * @see com.artemis.annotations.Wire
  */
-public abstract class BaseSystem {
+public abstract class BaseSystem implements WorldAwareInterface {
 	/** The world this system belongs to. */
 	@SkipWire
 	protected World world;
@@ -115,6 +115,7 @@ public abstract class BaseSystem {
 	 * @param world
 	 *			the world to set
 	 */
+	@Override
 	public void setWorld(World world) {
 		this.world = world;
 	}
@@ -124,6 +125,7 @@ public abstract class BaseSystem {
 	 *
 	 * @return the associated world
 	 */
+	@Override
 	public World getWorld() {
 		return world;
 	}
